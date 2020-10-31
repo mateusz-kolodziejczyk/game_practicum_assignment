@@ -17,7 +17,7 @@ public class WeaponManagement : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            activeWeapon.Shoot(firstPersonCamera, character);
+            activeWeapon.Shoot(firstPersonCamera, character, GetComponent<AudioSource>());
         }
         
             rotateBasedOnMovement();

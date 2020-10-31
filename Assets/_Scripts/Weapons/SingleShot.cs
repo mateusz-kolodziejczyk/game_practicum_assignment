@@ -23,6 +23,10 @@ public class SingleShot : Weapon
     [SerializeField]
     private GameObject bulletEmitter;
 
+    // Audio
+    [SerializeField]
+    private AudioClip shootingNoise;
+
 
     // Properties
     public override int AmmoPerShot { get { return ammoPerShot; } }
@@ -32,22 +36,20 @@ public class SingleShot : Weapon
     public override float Damage { get { return damage; } }
     public override GameObject Bullet { get { return bulletPrefab; } }
     public override GameObject BulletEmitter { get { return bulletEmitter; } }
+    public override AudioClip ShootingNoise{ get { return shootingNoise;  } }
+    
 
     // Methods
-    public override void Shoot(Camera camera, GameObject character)
+    public override void Shoot(Camera camera, GameObject character, AudioSource audioSource)
     {
         // Using code from https://answers.unity.com/questions/1582934/how-to-make-bullet-go-straight-to-middle-of-the-sc.html
 
         // Create a ray from the camera going through the middle of your screen
         Ray ray = camera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
-        RaycastHit hit;
+
         // Check whether your are pointing to something so as to adjust the direction
         Vector3 targetPoint;
-       /* if (Physics.Raycast(ray, out hit))
-        {
-            targetPoint = hit.point;
-            Debug.Log(targetPoint);
-        }*/
+ 
         targetPoint = ray.GetPoint(25);
 
 
@@ -68,6 +70,10 @@ public class SingleShot : Weapon
 
         bulletScript.IsFriendly = true;
         bulletScript.Damage = damage;
+
+        // Audio
+        audioSource.clip = shootingNoise;
+        audioSource.Play();
 
     }
 }
