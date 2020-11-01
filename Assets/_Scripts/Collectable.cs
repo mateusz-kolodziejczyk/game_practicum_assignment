@@ -20,7 +20,7 @@ public class Collectable : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            gameManagement.addToItemProgress();
+            gameManagement.AddToItemProgress();
             Debug.Log(gameManagement.PlayerScore);
             AudioSource.PlayClipAtPoint(collectSound, transform.position);
             Destroy(gameObject);

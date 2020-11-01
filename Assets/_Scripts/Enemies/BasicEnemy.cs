@@ -51,7 +51,7 @@ public class BasicEnemy : Enemy
     }
 
 
-    public override void playAwareNoise()
+    public override void PlayAwareNoise()
     {
         EnemyAudioSource.clip = awareNoise;
         EnemyAudioSource.Play();

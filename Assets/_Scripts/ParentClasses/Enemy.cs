@@ -17,11 +17,11 @@ public abstract class Enemy : MonoBehaviour
 
     public abstract IEnumerator Attack(Player player);
     public abstract void TakeDamage(float damageAmount);
-    public void Die()
+    public virtual void Die()
     {
-        GamesManager.addToScore(Score);
+        GamesManager.AddToScore(Score);
         Destroy(gameObject);
     }
-    public abstract void playAwareNoise();
+    public abstract void PlayAwareNoise();
 
 }

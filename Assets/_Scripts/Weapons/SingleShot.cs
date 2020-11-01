@@ -19,8 +19,6 @@ public class SingleShot : Weapon
     private GameObject bulletPrefab;
 
     [SerializeField]
-    private BulletManager bulletManager;
-    [SerializeField]
     private GameObject bulletEmitter;
 
     // Audio

@@ -11,6 +11,8 @@ TagManager:
   - Score Text
   - ItemProgressText
   - MuteText
+  - BossEntranceDoor
+  - LevelExitDoor
   layers:
   - Default
   - TransparentFX

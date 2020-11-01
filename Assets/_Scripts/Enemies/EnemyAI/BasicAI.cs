@@ -9,6 +9,7 @@ public class BasicAI : MonoBehaviour
     public UnityEngine.AI.NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
     public BasicMovement character { get; private set; } // the character we are controlling
     public Transform target;                                    // target to aim for
+    public float maxSeeDistance = 30;
     private bool hasSeenThePlayer = false;
 
     Enemy enemy;
@@ -48,35 +49,35 @@ public class BasicAI : MonoBehaviour
             }
         }
     }
-        public void SetTarget(Transform target)
-        {
-            this.target = target;
-        }
+    public void SetTarget(Transform target)
+    {
+        this.target = target;
+    }
 
-        bool CanSeePlayer()
+    bool CanSeePlayer()
+    {
+        // Created using help from https://answers.unity.com/questions/15735/field-of-view-using-raycasting.html
+        RaycastHit hit;
+        var directionToPlayer = target.transform.position - transform.position;
+        if (Physics.Raycast(transform.position, directionToPlayer, out hit))
         {
-            // Created using help from https://answers.unity.com/questions/15735/field-of-view-using-raycasting.html
-            RaycastHit hit;
-            var directionToPlayer = target.transform.position - transform.position;
-            if (Physics.Raycast(transform.position, directionToPlayer, out hit))
+            if (hit.collider.CompareTag("Player") && hit.distance < maxSeeDistance)
             {
-                if (hit.collider.CompareTag("Player"))
-                {
                 if (!hasSeenThePlayer)
                 {
-                    enemy.playAwareNoise();
+                    enemy.PlayAwareNoise();
                     hasSeenThePlayer = true;
                 }
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
             else
             {
                 return false;
             }
         }
+        else
+        {
+            return false;
+        }
     }
+}

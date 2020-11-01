@@ -15,6 +15,11 @@ public class GameManagement : MonoBehaviour
 
     int itemProgress;
     bool isMute = false;
+
+    GameObject levelExitDoor;
+    GameObject bossEntranceDoor;
+
+    int requiredItemsAmount = 4;
     
     void Awake()
     {
@@ -34,29 +39,43 @@ public class GameManagement : MonoBehaviour
         {
             Mute();
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
-    public void addToScore(int scoreToAdd)
+    public void AddToScore(int scoreToAdd)
     {
         PlayerScore += scoreToAdd;
-        setScoreText();
+        SetScoreText();
     }
 
-    public void addToItemProgress()
+    public void AddToItemProgress()
     {
         itemProgress++;
-        itemProgressText.text = "Items Found: " + itemProgress + "/4";
+        itemProgressText.text = "Items Found: " + itemProgress + "/" + requiredItemsAmount;
+        if(itemProgress >= requiredItemsAmount)
+        {
+            Debug.Log("Logd");
+            OpenBossEntrance();
+        }
     }
 
-    public void startGame()
+    public void StartGame()
     {
         SceneManager.LoadScene(1);
     }
 
-    public void loadNextLevel()
+    public void LoadNextLevel()
     {
         int currentLevel = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentLevel + 1);
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
 
@@ -80,20 +99,22 @@ public class GameManagement : MonoBehaviour
             itemProgressText = GameObject.FindWithTag("ItemProgressText").GetComponent<Text>();
             scoreText = GameObject.FindWithTag("Score Text").GetComponent<Text>();
             muteText = GameObject.FindWithTag("MuteText").GetComponent<Text>();
-            updateMuteText();
-            setScoreText();
+            bossEntranceDoor = GameObject.FindWithTag("BossEntranceDoor");
+            levelExitDoor = GameObject.FindWithTag("LevelExitDoor");
+            UpdateMuteText();
+            SetScoreText();
             itemProgress = 0;
         }
     }
 
-    void updateMuteText()
+    void UpdateMuteText()
     {
         // If muted, say that the audio is muted. If not don't
         string mutedStatus = isMute ? "Muted" : "Active";
         muteText.text = "Mute: 'M'\nAudio: " + mutedStatus;
     }
 
-    void setScoreText()
+    void SetScoreText()
     {
         scoreText.text = "Score: " + PlayerScore;
     }
@@ -103,6 +124,17 @@ public class GameManagement : MonoBehaviour
         // Done using help from https://answers.unity.com/questions/829987/how-to-make-mute-button.html
         isMute = !isMute;
         AudioListener.volume = isMute ? 0 : 1;
-        updateMuteText();
+        UpdateMuteText();
     }
+
+    public void OpenLevelExit()
+    {
+        Destroy(levelExitDoor);
+    }
+
+    public void OpenBossEntrance()
+    {
+        Destroy(bossEntranceDoor);
+    }
+
 }
