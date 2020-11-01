@@ -96,14 +96,25 @@ public class GameManagement : MonoBehaviour
         // Using help from https://answers.unity.com/questions/1580211/when-an-object-is-dontdestroyonload-where-can-i-pu.html
         if (scene.isLoaded)
         {
-            itemProgressText = GameObject.FindWithTag("ItemProgressText").GetComponent<Text>();
-            scoreText = GameObject.FindWithTag("Score Text").GetComponent<Text>();
-            muteText = GameObject.FindWithTag("MuteText").GetComponent<Text>();
-            bossEntranceDoor = GameObject.FindWithTag("BossEntranceDoor");
-            levelExitDoor = GameObject.FindWithTag("LevelExitDoor");
-            UpdateMuteText();
-            SetScoreText();
-            itemProgress = 0;
+            // Only look for these things in non menu indexes
+            if (scene.buildIndex > 0)
+            {
+                itemProgressText = GameObject.FindWithTag("ItemProgressText").GetComponent<Text>();
+                scoreText = GameObject.FindWithTag("Score Text").GetComponent<Text>();
+                muteText = GameObject.FindWithTag("MuteText").GetComponent<Text>();
+                bossEntranceDoor = GameObject.FindWithTag("BossEntranceDoor");
+                levelExitDoor = GameObject.FindWithTag("LevelExitDoor");
+                UpdateMuteText();
+                SetScoreText();
+                itemProgress = 0;
+            }
+            else if(scene.buildIndex == 0)
+            {
+                // unlock the cursor on loading the menu(if you're coming back from playing)
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
         }
     }
 
