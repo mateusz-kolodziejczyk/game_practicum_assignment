@@ -11,7 +11,8 @@ public class BasicAI : MonoBehaviour
     public Transform target;                                    // target to aim for
     private bool hasSeenThePlayer = false;
 
-
+    Enemy enemy;
+    AudioSource enemyAudioSource;
     private void Start()
     {
         // get the components on the object we need ( should not be null due to require component so no need to check )
@@ -21,6 +22,9 @@ public class BasicAI : MonoBehaviour
 
         agent.updateRotation = false;
         agent.updatePosition = true;
+
+        enemy = GetComponent<Enemy>();
+        enemyAudioSource = GetComponent<AudioSource>();
     }
 
 
@@ -31,6 +35,7 @@ public class BasicAI : MonoBehaviour
             if (target != null)
             {
                 agent.SetDestination(target.position);
+
             }
 
             if (agent.remainingDistance > agent.stoppingDistance)
@@ -57,7 +62,11 @@ public class BasicAI : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
+                if (!hasSeenThePlayer)
+                {
+                    enemy.playAwareNoise();
                     hasSeenThePlayer = true;
+                }
                     return true;
                 }
                 else

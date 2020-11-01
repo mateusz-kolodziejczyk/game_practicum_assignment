@@ -9,6 +9,8 @@ public class Collectable : MonoBehaviour
     private GameManagement gameManagement;
     [SerializeField]
     private int score = 1;
+    [SerializeField]
+    private AudioClip collectSound;
     void Awake()
     {
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
@@ -18,8 +20,9 @@ public class Collectable : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            gameManagement.addToScore(score);
+            gameManagement.addToItemProgress();
             Debug.Log(gameManagement.PlayerScore);
+            AudioSource.PlayClipAtPoint(collectSound, transform.position);
             Destroy(gameObject);
         }
     }

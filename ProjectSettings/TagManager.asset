@@ -8,6 +8,9 @@ TagManager:
   - Enemy
   - GameManagement
   - Collectable
+  - Score Text
+  - ItemProgressText
+  - MuteText
   layers:
   - Default
   - TransparentFX

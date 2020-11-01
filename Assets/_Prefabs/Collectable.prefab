@@ -127,3 +127,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManagement: {fileID: 0}
   score: 1
+  collectSound: {fileID: 8300000, guid: 3b7777ea8c38f344c988b1b20f726f57, type: 3}

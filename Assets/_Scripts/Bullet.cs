@@ -25,5 +25,13 @@ public class Bullet : MonoBehaviour
         {
             // Code for damage here
         }
+        else if (collider.CompareTag("Collectable"))
+        {
+           // Don't destroy if it hits a collectable
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
