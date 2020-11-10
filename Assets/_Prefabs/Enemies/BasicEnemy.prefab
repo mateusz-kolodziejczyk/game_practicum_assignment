@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 7839987776291322883}
   - component: {fileID: 1777271783}
   - component: {fileID: 295576118}
+  - component: {fileID: 1693427717}
   m_Layer: 0
   m_Name: BasicEnemy
   m_TagString: Enemy
@@ -115,8 +116,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.50000006
-  m_Speed: 9.5
-  m_Acceleration: 8
+  m_Speed: 20
+  m_Acceleration: 20
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -151,7 +152,7 @@ Animator:
   m_GameObject: {fileID: 6876507452352436326}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: caf92e8aa87a4684ea0ade4283094d89, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9988a219868302041b8ec9b5939d9790, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -174,8 +175,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   damage: 10
-  timeBetweenAttacks: 1
+  timeBetweenAttacks: 1.5
   awareNoise: {fileID: 8300000, guid: f3243faff305ced4d801e84c51dd8dfb, type: 3}
+  score: 100
 --- !u!114 &7839987776291322883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,3 +381,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1693427717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6876507452352436326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43c853825c34654591a7dd0a923fa0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 0}

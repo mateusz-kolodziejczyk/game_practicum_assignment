@@ -12,15 +12,27 @@ public class WeaponManagement : MonoBehaviour
     [SerializeField]
     GameObject character;
 
+    IEnumerator shootAutomatic;
+
     // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            activeWeapon.Shoot(firstPersonCamera, character, GetComponent<AudioSource>());
+            // Run the shoot multiple script if its an automatic weapon
+            if (activeWeapon is AutomaticWeapon automaticWeapon)
+            {
+                shootAutomatic = automaticWeapon.ShootAutomatic(firstPersonCamera, character, GetComponent<AudioSource>());
+                StartCoroutine(shootAutomatic);
+            }
+            else
+            {
+                activeWeapon.ShootSingle(firstPersonCamera, character, GetComponent<AudioSource>());
+            }
         }
         
-            rotateBasedOnMovement();
+
+        rotateBasedOnMovement();
     }
 
     private void rotateBasedOnMovement()
@@ -29,6 +41,6 @@ public class WeaponManagement : MonoBehaviour
         var characterRight = character.transform.right;
 
         var sidewaysVelocity = Vector3.Dot(characterRight, characterVelocity);
-        gameObject.transform.Rotate(new Vector3(0, -0.6f*sidewaysVelocity, 0));
+        gameObject.transform.Rotate(new Vector3(0, -0.6f * sidewaysVelocity, 0));
     }
 }

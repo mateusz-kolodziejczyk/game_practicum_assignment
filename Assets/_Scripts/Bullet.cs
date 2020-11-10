@@ -29,6 +29,10 @@ public class Bullet : MonoBehaviour
         {
            // Don't destroy if it hits a collectable
         }
+        else if (collider.CompareTag("PlayerBullet"))
+        {
+            // Don't destroy if it hits a player bullet
+        }
         else
         {
             Destroy(gameObject);

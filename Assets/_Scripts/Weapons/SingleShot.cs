@@ -12,11 +12,13 @@ public class SingleShot : Weapon
     [SerializeField]
     private int bulletsPerShot = 1;
     [SerializeField]
-    private int bulletSpread = 0;
+    private float bulletSpread = 0;
     [SerializeField]
     private float damage = 20;
     [SerializeField]
     private GameObject bulletPrefab;
+    [SerializeField]
+    private float timeBetweenShots;
 
     [SerializeField]
     private GameObject bulletEmitter;
@@ -27,18 +29,11 @@ public class SingleShot : Weapon
 
 
     // Properties
-    public override int AmmoPerShot { get { return ammoPerShot; } }
-    public override int MaxAmmo { get { return maxAmmo; } }
-    public override int BulletsPerShot { get { return bulletsPerShot; } }
-    public override int BulletSpread { get { return bulletSpread; } }
-    public override float Damage { get { return damage; } }
-    public override GameObject Bullet { get { return bulletPrefab; } }
-    public override GameObject BulletEmitter { get { return bulletEmitter; } }
-    public override AudioClip ShootingNoise{ get { return shootingNoise;  } }
-    
+    public override float BulletSpread { get { return bulletSpread; } set { bulletSpread = value; } }
+
 
     // Methods
-    public override void Shoot(Camera camera, GameObject character, AudioSource audioSource)
+    public override void ShootSingle(Camera camera, GameObject character, AudioSource audioSource)
     {
         // Using code from https://answers.unity.com/questions/1582934/how-to-make-bullet-go-straight-to-middle-of-the-sc.html
 

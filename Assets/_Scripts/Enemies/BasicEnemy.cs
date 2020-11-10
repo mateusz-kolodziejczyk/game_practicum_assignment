@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BasicEnemy : Enemy
 {
+    // Serialized variables
     [SerializeField]
     float health = 100;
     [SerializeField]
@@ -12,35 +13,42 @@ public class BasicEnemy : Enemy
     float timeBetweenAttacks = 1f;
     [SerializeField]
     AudioClip awareNoise;
+    [SerializeField]
+    int score;
  
-    public override float Health { get { return health; } }
-    public override float Damage { get { return damage; } }
-    public override float TimeBetweenAttacks{ get { return timeBetweenAttacks; } }
-    public override AudioClip AwareNoise { get; set; }
+    // Properties
     public override AudioSource EnemyAudioSource { get; set; }
     public override GameManagement GamesManager { get; set; }
-    public override int Score { get; set; } = 50;
+    public override int Score { get { return score; } set { score = value; } }
 
+    // Private variables
     private bool isAttacking = false;
     private IEnumerator attackCoroutine;
+    private float attackTimer;
 
     private void Awake()
     {
+        attackTimer = timeBetweenAttacks - 0.1f;
         EnemyAudioSource = GetComponent<AudioSource>();
+        Score = score;
         GamesManager = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         
     }
     public override IEnumerator Attack(Player player)
     {
-        isAttacking = true;
-        yield return new WaitForSeconds(timeBetweenAttacks);
+        // Attack timer stays constant even if the enemy disengages
         while (isAttacking)
         {
-            player.ChangeHealth(damage);
-            yield return new WaitForSeconds(timeBetweenAttacks);
+            attackTimer += Time.deltaTime;
+            if (attackTimer >= timeBetweenAttacks)
+            {
+                player.ChangeHealth(damage);
+                attackTimer = 0.0f;
+            }
+            yield return null;
         }
     }
-
+   
     public override void TakeDamage(float damageAmount)
     {
         health -= damageAmount;
@@ -62,6 +70,7 @@ public class BasicEnemy : Enemy
         {
             if (collision.collider.CompareTag("Player"))
             {
+                isAttacking = true;
                 attackCoroutine = Attack(collision.collider.GetComponent<Player>());
                 StartCoroutine(attackCoroutine);
             }

@@ -34,7 +34,7 @@ using UnityEngine;
 		}
 
 
-		public void Move(Vector3 move, bool crouch, bool jump)
+		public void Move(Vector3 move, bool jump)
 		{
 
 			// convert the world relative moveInput vector into a local-relative
@@ -49,31 +49,16 @@ using UnityEngine;
 
 			ApplyExtraTurnRotation();
 
-			// control and velocity handling is different when grounded and airborne:
 			if (m_IsGrounded)
 			{
-				HandleGroundedMovement(crouch, jump);
-			}
-			else
-			{
-				HandleAirborneMovement();
+				HandleJumping(jump);
 			}
 		}
 
-		void HandleAirborneMovement()
-		{
-			// apply extra gravity from multiplier:
-			Vector3 extraGravityForce = (Physics.gravity * m_GravityMultiplier) - Physics.gravity;
-			m_Rigidbody.AddForce(extraGravityForce);
-
-			m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
-		}
-
-
-		void HandleGroundedMovement(bool crouch, bool jump)
+		void HandleJumping(bool jump)
 		{
 			// check whether conditions are right to allow a jump:
-			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+			if (jump && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
 			{
 				// jump!
 				m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
@@ -90,20 +75,6 @@ using UnityEngine;
 			transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
 		}
 
-
-		public void OnAnimatorMove()
-		{
-			// we implement this function to override the default root motion.
-			// this allows us to modify the positional speed before it's applied.
-			if (m_IsGrounded && Time.deltaTime > 0)
-			{
-				Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
-
-				// we preserve the existing y part of the current velocity.
-				v.y = m_Rigidbody.velocity.y;
-				m_Rigidbody.velocity = v;
-			}
-		}
 
 
 		void CheckGroundStatus()

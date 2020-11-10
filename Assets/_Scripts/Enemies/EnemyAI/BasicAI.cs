@@ -14,12 +14,14 @@ public class BasicAI : MonoBehaviour
 
     Enemy enemy;
     AudioSource enemyAudioSource;
+    EnemyHandleFSM fsmHandler;
     private void Start()
     {
         // get the components on the object we need ( should not be null due to require component so no need to check )
         agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
         character = GetComponent<BasicMovement>();
         target = GameObject.FindWithTag("Player").transform;
+        fsmHandler = GetComponent<EnemyHandleFSM>();
 
         agent.updateRotation = false;
         agent.updatePosition = true;
@@ -41,11 +43,11 @@ public class BasicAI : MonoBehaviour
 
             if (agent.remainingDistance > agent.stoppingDistance)
             {
-                character.Move(agent.desiredVelocity, false, false);
+                character.Move(agent.desiredVelocity, false);
             }
             else
             {
-                character.Move(Vector3.zero, false, false);
+                character.Move(Vector3.zero, false);
             }
         }
     }
@@ -66,6 +68,7 @@ public class BasicAI : MonoBehaviour
                 if (!hasSeenThePlayer)
                 {
                     enemy.PlayAwareNoise();
+                    fsmHandler.CanSeePlayer(true);
                     hasSeenThePlayer = true;
                 }
                 return true;
