@@ -20,6 +20,9 @@ public class BasicEnemy : Enemy
     public override AudioSource EnemyAudioSource { get; set; }
     public override GameManagement GamesManager { get; set; }
     public override int Score { get { return score; } set { score = value; } }
+    public override float Damage { get { return damage; } set { damage = value; } }
+    public override float TimeBetweenAttacks{ get { return timeBetweenAttacks; } set { timeBetweenAttacks= value; } }
+    public override float Health{ get { return health; } set { health= value; } }
 
     // Private variables
     private bool isAttacking = false;
@@ -29,8 +32,8 @@ public class BasicEnemy : Enemy
     private void Awake()
     {
         attackTimer = timeBetweenAttacks - 0.1f;
+        TimeBetweenAttacks = timeBetweenAttacks;
         EnemyAudioSource = GetComponent<AudioSource>();
-        Score = score;
         GamesManager = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         
     }

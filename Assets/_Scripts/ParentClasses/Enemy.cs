@@ -9,6 +9,9 @@ public abstract class Enemy : MonoBehaviour
     public abstract int Score { get; set; }
     public abstract AudioSource EnemyAudioSource { get; set; }
     public abstract GameManagement GamesManager { get; set; }
+    public abstract float Health { get; set; }
+    public abstract float Damage { get; set; }
+    public abstract float TimeBetweenAttacks { get; set; }
    
 
     public abstract IEnumerator Attack(Player player);

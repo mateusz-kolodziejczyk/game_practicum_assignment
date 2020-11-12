@@ -34,6 +34,7 @@ public class Shotgun : Weapon
     // Properties
     public override float BulletSpread { get { return bulletSpread; } set { bulletSpread = value; } }
 
+    public override int WeaponID { get; set; } = 3;
 
     // Methods
     private void Start()

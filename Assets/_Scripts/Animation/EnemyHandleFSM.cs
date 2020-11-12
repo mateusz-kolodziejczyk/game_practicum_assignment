@@ -10,7 +10,8 @@ public class EnemyHandleFSM : MonoBehaviour
     AnimatorStateInfo info;
     void Start()
     {
-        anim = GetComponent<Animator>();
+        Debug.Log(transform.GetChild(0));
+        anim = transform.GetChild(0).gameObject.GetComponent<Animator>();
     }
 
     public void CanSeePlayer(bool canSeePlayer)

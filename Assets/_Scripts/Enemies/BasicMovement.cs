@@ -16,7 +16,6 @@ using UnityEngine;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
 
 		Rigidbody m_Rigidbody;
-		Animator m_Animator;
 		bool m_IsGrounded;
 		float m_OrigGroundCheckDistance;
 		float m_TurnAmount;
@@ -26,7 +25,6 @@ using UnityEngine;
 
 		void Start()
 		{
-			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
 
 			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
@@ -58,12 +56,11 @@ using UnityEngine;
 		void HandleJumping(bool jump)
 		{
 			// check whether conditions are right to allow a jump:
-			if (jump && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+			if (jump)
 			{
 				// jump!
 				m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
 				m_IsGrounded = false;
-				m_Animator.applyRootMotion = false;
 				m_GroundCheckDistance = 0.1f;
 			}
 		}
@@ -90,13 +87,11 @@ using UnityEngine;
 			{
 				m_GroundNormal = hitInfo.normal;
 				m_IsGrounded = true;
-				m_Animator.applyRootMotion = true;
 			}
 			else
 			{
 				m_IsGrounded = false;
 				m_GroundNormal = Vector3.up;
-				m_Animator.applyRootMotion = false;
 			}
 		}
 	}

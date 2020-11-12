@@ -14,6 +14,9 @@ TagManager:
   - BossEntranceDoor
   - LevelExitDoor
   - PlayerBullet
+  - Weapon
+  - WeaponPanel
+  - DifficultySelection
   layers:
   - Default
   - TransparentFX

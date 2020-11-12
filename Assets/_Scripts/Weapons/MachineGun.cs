@@ -35,6 +35,7 @@ public class MachineGun : AutomaticWeapon
 
     // Properties
     public override float BulletSpread { get { return bulletSpread; } set { bulletSpread = value; } }
+    public override int WeaponID { get; set; } = 2;
 
 
     // Methods
