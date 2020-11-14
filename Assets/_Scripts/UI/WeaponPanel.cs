@@ -25,7 +25,6 @@ public class WeaponPanel : MonoBehaviour
     public void switchWeaponHighlight(int weaponID)
     {
         // Disable outline
-        Debug.Log(weaponPanels[currentWeaponID]);
         weaponPanels[currentWeaponID].transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false;
         currentWeaponID = weaponID;
         // Get the image child and set its outline to true

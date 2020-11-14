@@ -27,6 +27,9 @@ public class SingleShot : Weapon
     [SerializeField]
     private AudioClip shootingNoise;
 
+    // The range the ray trace is set to
+    [SerializeField]
+    private float accurateRange;
 
     // Properties
     public override float BulletSpread { get { return bulletSpread; } set { bulletSpread = value; } }
@@ -45,7 +48,7 @@ public class SingleShot : Weapon
         // Check whether your are pointing to something so as to adjust the direction
         Vector3 targetPoint;
  
-        targetPoint = ray.GetPoint(25);
+        targetPoint = ray.GetPoint(50);
 
 
         // Create the bullet and give it a velocity according to the target point computed before
@@ -60,7 +63,7 @@ public class SingleShot : Weapon
             addedVelocity = character.transform.forward * forwardCharacterVelocity;
         }
         var instantiatedBullet = Instantiate(bulletPrefab, bulletEmitter.transform.position, bulletEmitter.transform.rotation);
-        instantiatedBullet.GetComponent<Rigidbody>().velocity = (targetPoint - bulletEmitter.transform.position).normalized * 20 + addedVelocity;
+        instantiatedBullet.GetComponent<Rigidbody>().velocity = (targetPoint - bulletEmitter.transform.position).normalized * 20 + addedVelocity + CalculateSpread(character.transform);
         var bulletScript = instantiatedBullet.GetComponent<Bullet>();
 
         bulletScript.IsFriendly = true;

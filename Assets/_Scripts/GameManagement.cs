@@ -31,8 +31,8 @@ public class GameManagement : MonoBehaviour
 
 
     // Weapons
-    public Dictionary<int, Weapon> WeaponsInventory { get; set; }
-    public int ActiveWeaponID { get; set; }
+    public Dictionary<int, Weapon> WeaponsInventory { get; set; } = new Dictionary<int, Weapon>();
+    public int ActiveWeaponID { get; set; } = 1;
     WeaponPanel weaponPanel;
 
     // Goals
@@ -46,24 +46,14 @@ public class GameManagement : MonoBehaviour
 
     void Awake()
     {
+        // Only for testing if starting inside a level
+
 
         // Adding the multipiers
         difficultyMultipliers.Add(DifficultyLevel.Easy, 0.7f);
         difficultyMultipliers.Add(DifficultyLevel.Medium, 1f);
         difficultyMultipliers.Add(DifficultyLevel.Hard, 1.5f);
             
-        // Setup the weapon inventory
-        WeaponsInventory = new Dictionary<int, Weapon>();
-        var weapons = GameObject.FindGameObjectsWithTag("Weapon");
-
-        // Adding all the weapons to the inventory
-        foreach (var weapon in weapons)
-        {
-            var weaponScript = weapon.GetComponent<Weapon>();
-            WeaponsInventory.Add(weaponScript.WeaponID, weaponScript);
-        }
-        ActiveWeaponID = 1;
-
         // Getting difficulty selection and adding a listener
         // Only do if on the start screen(This is for testing, game will always start on menu)
         if (SceneManager.GetActiveScene().buildIndex == 0)
@@ -221,13 +211,11 @@ public class GameManagement : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        Debug.Log("OnEnable");
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        Debug.Log("OnDisable");
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -238,6 +226,28 @@ public class GameManagement : MonoBehaviour
             // Only look for these things in non menu indexes
             if (scene.buildIndex > 0)
             {
+                // Only run if the inventory is empty
+                if(WeaponsInventory.Count < 1)
+                {
+                    // Add all weapons
+                    var weapons = GameObject.FindGameObjectsWithTag("Weapon");
+
+                    // Adding all the weapons to the inventory
+                    foreach (var weapon in weapons)
+                    {
+                        var weaponScript = weapon.GetComponent<Weapon>();
+                        WeaponsInventory.Add(weaponScript.WeaponID, weaponScript);
+                        // Set all weapons besides the currently equipped one to inactive
+                        if(weaponScript.WeaponID == ActiveWeaponID)
+                        {
+                            weapon.SetActive(true);
+                        }
+                        else
+                        {
+                            weapon.SetActive(false);
+                        }
+                    }
+                }
                 // Add all enemies in the level into an array
                 var enemies = GameObject.FindGameObjectsWithTag("Enemy");
                 foreach (var enemyGameObject in enemies)

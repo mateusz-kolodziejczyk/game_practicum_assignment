@@ -9,14 +9,20 @@ public class BasicAI : MonoBehaviour
     public UnityEngine.AI.NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
     public BasicMovement character { get; private set; } // the character we are controlling
     public Transform target;                                    // target to aim for
-    public float maxSeeDistance = 30;
+    public float maxSeeDistance = 50;
     private bool hasSeenThePlayer = false;
 
     Enemy enemy;
     AudioSource enemyAudioSource;
     EnemyHandleFSM fsmHandler;
+
+    private Vector3 startPosition;
+    private float movingRange;
     private void Start()
     {
+        startPosition = transform.position;
+        startPosition.y = 0;
+        movingRange = maxSeeDistance * 1.5f;
         // get the components on the object we need ( should not be null due to require component so no need to check )
         agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
         character = GetComponent<BasicMovement>();
@@ -30,15 +36,27 @@ public class BasicAI : MonoBehaviour
         enemyAudioSource = GetComponent<AudioSource>();
     }
 
-
+ 
     private void Update()
     {
-        if (CanSeePlayer() || hasSeenThePlayer)
+        if ((CanSeePlayer() || hasSeenThePlayer))
         {
-            if (target != null)
+            // If the enemy is back at spawn after seeing the player, revert the enemy to nto having seen the player and make it play the idle animation again
+            if (Vector3.Distance(startPosition, transform.position) <= 3 && Vector3.Distance(agent.destination, startPosition) <= 0.5) 
+            {
+                fsmHandler.IsMoving(false);
+                hasSeenThePlayer = false;
+            }
+
+
+            // Only set a new position if the player is within the start position range
+            if (target != null && Vector3.Distance(startPosition, target.position) <= movingRange)
             {
                 agent.SetDestination(target.position);
-
+            }
+            else
+            {
+                agent.SetDestination(startPosition);
             }
 
             if (agent.remainingDistance > agent.stoppingDistance)
@@ -68,7 +86,7 @@ public class BasicAI : MonoBehaviour
                 if (!hasSeenThePlayer)
                 {
                     enemy.PlayAwareNoise();
-                    fsmHandler.CanSeePlayer(true);
+                    fsmHandler.IsMoving(true);
                     hasSeenThePlayer = true;
                 }
                 return true;

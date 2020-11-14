@@ -27,8 +27,9 @@ public class Shotgun : Weapon
     [SerializeField]
     private AudioClip shootingNoise;
 
+    // The range the ray trace is set to
     [SerializeField]
-    private Vector3 bulletRotation;
+    private float accurateRange;
 
 
     // Properties

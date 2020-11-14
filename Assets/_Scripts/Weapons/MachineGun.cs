@@ -26,11 +26,12 @@ public class MachineGun : AutomaticWeapon
     [SerializeField]
     private AudioClip shootingNoise;
 
-    [SerializeField]
-    private Vector3 bulletRotation;
 
     private float shotTimer = 0.0f;
 
+    // The range the ray trace is set to
+    [SerializeField]
+    private float accurateRange;
 
 
     // Properties
@@ -53,7 +54,7 @@ public class MachineGun : AutomaticWeapon
         // Check whether your are pointing to something so as to adjust the direction
         Vector3 targetPoint;
 
-        targetPoint = ray.GetPoint(25);
+        targetPoint = ray.GetPoint(50);
 
 
         // Create the bullet and give it a velocity according to the target point computed before
