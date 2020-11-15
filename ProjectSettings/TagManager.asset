@@ -20,6 +20,7 @@ TagManager:
   - AmmoText
   - LivesText
   - WeaponManagement
+  - Waypoint
   layers:
   - Default
   - TransparentFX
@@ -32,7 +33,7 @@ TagManager:
   - Wall
   - Minimap
   - Obstactles
-  - 
+  - Waypoint
   - 
   - 
   - 

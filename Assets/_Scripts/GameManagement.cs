@@ -46,7 +46,7 @@ public class GameManagement : MonoBehaviour
     WeaponPanel weaponPanel;
 
     // Goals
-    int requiredItemsAmount = 4;
+    int requiredItemsAmount = 3;
     // Difficulty 
     Dropdown difficultySelection;
     public DifficultyLevel CurrentDifficulty { get; set; } = DifficultyLevel.Hard;

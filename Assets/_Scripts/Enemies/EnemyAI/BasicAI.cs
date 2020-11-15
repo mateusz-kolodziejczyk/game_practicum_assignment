@@ -18,6 +18,8 @@ public class BasicAI : MonoBehaviour
 
     private Vector3 startPosition;
     private float movingRange;
+
+    public Vector3 StartPosition { get { return startPosition; } set { startPosition = value; } }
     private void Start()
     {
         startPosition = transform.position;
@@ -44,7 +46,7 @@ public class BasicAI : MonoBehaviour
             // If the enemy is back at spawn after seeing the player, revert the enemy to nto having seen the player and make it play the idle animation again
             if (Vector3.Distance(startPosition, transform.position) <= 3 && Vector3.Distance(agent.destination, startPosition) <= 0.5) 
             {
-                fsmHandler.IsMoving(false);
+                fsmHandler.IsPatrolling(true);
                 hasSeenThePlayer = false;
             }
 
@@ -52,7 +54,7 @@ public class BasicAI : MonoBehaviour
             // Only set a new position if the player is within the start position range
             if (target != null && Vector3.Distance(startPosition, target.position) <= movingRange)
             {
-                agent.SetDestination(target.position);
+                agent.SetDestination(new Vector3(target.position.x, 0, target.position.z));
             }
             else
             {
