@@ -11,6 +11,7 @@ public enum DifficultyLevel
     Medium,
     Hard
 }
+// This class handles UI as well as any information that needs to be kept across levels.
 public class GameManagement : MonoBehaviour
 {
     public static GameManagement instance;
@@ -19,6 +20,7 @@ public class GameManagement : MonoBehaviour
     Text itemProgressText;
     Text scoreText;
     Text muteText;
+    Text livesText;
 
     int itemProgress;
     bool isMute = false;
@@ -31,13 +33,15 @@ public class GameManagement : MonoBehaviour
     List<Enemy> enemiesOnLevel = new List<Enemy>();
 
     // Player Lives
-    public int MaxLives { get; set; } = 2;
+    public int MaxLives { get; set; } = 3;
     public int CurrentLives { get; set; }
 
 
 
     // Weapons
+    // Weapons Inventory contains all weapons, but is restricted by the unlocked weapon id's list
     public Dictionary<int, Weapon> WeaponsInventory { get; set; } = new Dictionary<int, Weapon>();
+    private List<int> UnlockedWeaponIDs { get; set; } = new List<int>();
     public int ActiveWeaponID { get; set; } = 1;
     WeaponPanel weaponPanel;
 
@@ -52,9 +56,17 @@ public class GameManagement : MonoBehaviour
 
     BaseFirstPersonController playerController;
 
+    //WeaponManagement weaponManagement;
+
+    IEnumerator showWeaponPanel;
+
 
     void Awake()
     {
+
+        // start the game off with only 1 weapon index equal to the single shooter one
+        UnlockedWeaponIDs.Add(1);
+        UnlockedWeaponIDs.Add(2);
         CurrentLives = MaxLives;
         // Only for testing if starting inside a level
 
@@ -135,14 +147,14 @@ public class GameManagement : MonoBehaviour
     {
         WeaponsInventory.Add(weapon.WeaponID, weapon);
     }
-    
+
     // Player Lives
     public void changeLives(bool increase)
     {
         if (increase)
         {
             // Only increase max lives if less than max lives
-            if(CurrentLives < MaxLives)
+            if (CurrentLives < MaxLives)
             {
                 CurrentLives++;
             }
@@ -151,6 +163,8 @@ public class GameManagement : MonoBehaviour
         {
             CurrentLives--;
         }
+
+        SetLivesText();
     }
 
     // If bool is true increase id by 1, otherwise decreease by 1
@@ -165,16 +179,18 @@ public class GameManagement : MonoBehaviour
             ActiveWeaponID -= 1;
         }
         // Wrap the id around.
-        if (ActiveWeaponID > WeaponsInventory.Count)
+        if (ActiveWeaponID > UnlockedWeaponIDs.Count)
         {
             ActiveWeaponID = 1;
         }
         else if (ActiveWeaponID < 1)
         {
-            ActiveWeaponID = WeaponsInventory.Count;
+            ActiveWeaponID = UnlockedWeaponIDs.Count;
         }
 
         weaponPanel.switchWeaponHighlight(ActiveWeaponID);
+
+        startShowPanelCoroutine();
     }
 
     // Adjust enemy values like health/damage/attack speed here
@@ -195,10 +211,12 @@ public class GameManagement : MonoBehaviour
     public bool ChangeWeaponByIndex(int weaponIndex)
     {
         // If there are more weapon indexes than ewapons in the inventory, do not do anything
-        if (WeaponsInventory.Count >= weaponIndex)
+        if (UnlockedWeaponIDs.Count >= weaponIndex)
         {
             ActiveWeaponID = weaponIndex;
             weaponPanel.switchWeaponHighlight(ActiveWeaponID);
+
+            startShowPanelCoroutine();
             return true;
         }
         else
@@ -220,10 +238,39 @@ public class GameManagement : MonoBehaviour
         if (itemProgress >= requiredItemsAmount)
         {
             Debug.Log("Logd");
+            UnlockWeapon(3);
             OpenBossEntrance();
         }
     }
 
+    void UnlockWeapon(int weaponID)
+    {
+        // ONly run if the weapon isnt already unlocked, and the weapons inventory contains the id
+        if (!UnlockedWeaponIDs.Contains(weaponID) && WeaponsInventory.ContainsKey(weaponID))
+        {
+            UnlockedWeaponIDs.Add(weaponID);
+            weaponPanel.updatePanels(UnlockedWeaponIDs);
+            // Show panel to indicate there is a new weapon
+            startShowPanelCoroutine();
+        }
+    }
+
+    void startShowPanelCoroutine()
+    {
+        if(showWeaponPanel != null)
+        {
+            StopCoroutine(showWeaponPanel);
+        }
+        showWeaponPanel = ShowWeaponPanel();
+        StartCoroutine(showWeaponPanel);
+    }
+
+    IEnumerator ShowWeaponPanel()
+    {
+        weaponPanel.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        weaponPanel.gameObject.SetActive(false);
+    }
 
     // Methods for loading scenes
     public void StartGame()
@@ -251,7 +298,7 @@ public class GameManagement : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.sceneCountInBuildSettings - 1);
     }
-    
+
     public void ReloadLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -274,9 +321,8 @@ public class GameManagement : MonoBehaviour
         if (scene.isLoaded)
         {
             // Only look for these things in non menu indexes and non game over(game over is always the last index)
-            if (scene.buildIndex > 1 && scene.buildIndex < SceneManager.sceneCountInBuildSettings-1)
+            if (scene.buildIndex > 1 && scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1)
             {
-                WeaponsInventory.Clear();
                 SetupWeaponInventory();
                 // Add all enemies in the level into an array
                 var enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -289,21 +335,29 @@ public class GameManagement : MonoBehaviour
 
                 SetupUI();
                 weaponPanel.switchWeaponHighlight(ActiveWeaponID);
+                weaponPanel.updatePanels(UnlockedWeaponIDs);
+                weaponPanel.gameObject.SetActive(false);
                 // Two doors unlocked by progressing through the level
                 bossEntranceDoor = GameObject.FindWithTag("BossEntranceDoor");
                 levelExitDoor = GameObject.FindWithTag("LevelExitDoor");
                 // Set the text again on the level loaidng in
                 UpdateMuteText();
                 SetScoreText();
+                SetLivesText();
                 itemProgress = 0;
 
+                var weaponManagement = GameObject.FindWithTag("WeaponManagement").GetComponent<WeaponManagement>();
+                weaponManagement.ActiveWeapon = WeaponsInventory[ActiveWeaponID];
+
             }
-            else if (scene.buildIndex == 0 || scene.buildIndex == SceneManager.sceneCountInBuildSettings-1)
+            else if (scene.buildIndex == 0 || scene.buildIndex == SceneManager.sceneCountInBuildSettings - 1)
             {
+                // Clear all weapons
+                WeaponsInventory.Clear();
                 // unlock the cursor on loading the menu(if you're coming back from playing)
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                if(scene.buildIndex == 0)
+                if (scene.buildIndex == 0)
                 {
                     // Get the difficulty dropdown
                     difficultySelection = GameObject.FindWithTag("DifficultySelection").GetComponent<Dropdown>();
@@ -320,32 +374,40 @@ public class GameManagement : MonoBehaviour
         itemProgressText = GameObject.FindWithTag("ItemProgressText").GetComponent<Text>();
         scoreText = GameObject.FindWithTag("Score Text").GetComponent<Text>();
         muteText = GameObject.FindWithTag("MuteText").GetComponent<Text>();
+        livesText = GameObject.FindWithTag("LivesText").GetComponent<Text>();
     }
 
+    public void IncreaseAmmo(float multiplier)
+    {
+        var currentWeapon = WeaponsInventory[ActiveWeaponID];
+        currentWeapon.CurrentAmmo += (int)(currentWeapon.CurrentAmmo * multiplier);
+        currentWeapon.setAmmoText();
+    }
     void SetupWeaponInventory()
     {
-        // Only run if the inventory is empty
-        if (WeaponsInventory.Count < 1)
+        // If not empty
+        if (WeaponsInventory.Count > 0)
         {
-            // Add all weapons
-            var weapons = GameObject.FindGameObjectsWithTag("Weapon");
+            WeaponsInventory.Clear();
+        }
+        // Add all weapons
+        var weapons = GameObject.FindGameObjectsWithTag("Weapon");
 
-            // Adding all the weapons to the inventory
-            foreach (var weapon in weapons)
+        // Adding all the weapons to the inventory
+        foreach (var weapon in weapons)
+        {
+            var weaponScript = weapon.GetComponent<Weapon>();
+            WeaponsInventory.Add(weaponScript.WeaponID, weaponScript);
+            // Set all weapons besides the currently equipped one to inactive
+            if (weaponScript.WeaponID == ActiveWeaponID)
             {
-                var weaponScript = weapon.GetComponent<Weapon>();
-                WeaponsInventory.Add(weaponScript.WeaponID, weaponScript);
-                // Set all weapons besides the currently equipped one to inactive
-                if (weaponScript.WeaponID == ActiveWeaponID)
-                {
-                    // Set ammo to the first weapon
-                    weapon.SetActive(true);
-                    weaponScript.setAmmoText();
-                }
-                else
-                {
-                    weapon.SetActive(false);
-                }
+                // Set ammo to the first weapon
+                weapon.SetActive(true);
+                weaponScript.setAmmoText();
+            }
+            else
+            {
+                weapon.SetActive(false);
             }
         }
     }
@@ -359,6 +421,11 @@ public class GameManagement : MonoBehaviour
     void SetScoreText()
     {
         scoreText.text = "Score: " + PlayerScore;
+    }
+
+    void SetLivesText()
+    {
+        livesText.text = "Lives: " + CurrentLives;
     }
 
     void Mute()

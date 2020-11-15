@@ -18,6 +18,8 @@ TagManager:
   - WeaponPanel
   - DifficultySelection
   - AmmoText
+  - LivesText
+  - WeaponManagement
   layers:
   - Default
   - TransparentFX
@@ -28,8 +30,8 @@ TagManager:
   - 
   - 
   - Wall
-  - 
-  - 
+  - Minimap
+  - Obstactles
   - 
   - 
   - 

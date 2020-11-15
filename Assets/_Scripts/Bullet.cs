@@ -21,9 +21,16 @@ public class Bullet : MonoBehaviour
             collider.gameObject.GetComponent<Enemy>().TakeDamage(Damage);
             Destroy(gameObject);
         }
-        else if (collider.tag == "Player" && !IsFriendly)
+        else if (collider.tag == "Player")
         {
-            // Code for damage here
+            if (IsFriendly)
+            {
+                // Dont damage player
+            }
+            else
+            {
+                // 
+            }
         }
         else if (collider.CompareTag("Collectable"))
         {

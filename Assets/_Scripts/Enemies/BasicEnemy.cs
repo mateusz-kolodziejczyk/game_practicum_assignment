@@ -58,7 +58,7 @@ public class BasicEnemy : Enemy
             attackTimer += Time.deltaTime;
             if (attackTimer >= timeBetweenAttacks)
             {
-                player.ChangeHealth(damage);
+                player.LowerHealth(damage);
                 attackTimer = 0.0f;
             }
             yield return null;
@@ -72,24 +72,24 @@ public class BasicEnemy : Enemy
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (!isAttacking)
+        if (collision.collider.CompareTag("Player"))
         {
-            if (collision.collider.CompareTag("Player"))
+            Debug.Log("Collision");
+            if (!isAttacking)
             {
                 isAttacking = true;
                 attackCoroutine = Attack(collision.collider.GetComponent<Player>());
                 StartCoroutine(attackCoroutine);
             }
         }
-
     }
 
     private void OnCollisionExit(Collision collision)
     {
         if (collision.collider.CompareTag("Player"))
         {
+            Debug.Log("Collision Exit");
             isAttacking = false;
-            StopCoroutine(attackCoroutine);
         }
     }
 }

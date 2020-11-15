@@ -22,7 +22,7 @@ public class BasicAI : MonoBehaviour
     {
         startPosition = transform.position;
         startPosition.y = 0;
-        movingRange = maxSeeDistance * 1.5f;
+        movingRange = maxSeeDistance * 2f;
         // get the components on the object we need ( should not be null due to require component so no need to check )
         agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
         character = GetComponent<BasicMovement>();

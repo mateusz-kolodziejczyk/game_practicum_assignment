@@ -5,12 +5,28 @@ using UnityEngine.UI;
 
 public abstract class Weapon : MonoBehaviour
 {
+    private int currentAmmo;
     public Text AmmoText { get; set; }
     public abstract float BulletSpread { get; set; }
 
     public abstract int WeaponID { get; set; }
-    public virtual int CurrentAmmo { get; set; }
+   
     public abstract int MaxAmmo { get; set; }
+    public virtual int CurrentAmmo
+    {
+        get { return currentAmmo; }
+        set
+        {
+            if (value > MaxAmmo)
+            {
+                currentAmmo = MaxAmmo;
+            }
+            else
+            {
+                currentAmmo = value;
+            }
+        }
+    }
     // Character is needed to calculate the speed to add to the bullet when fired
     // Audiosource is to allow the weapon manager to feed in their weapon, so that there is only one audiosource dedicated to weapons.
     public virtual void Awake()

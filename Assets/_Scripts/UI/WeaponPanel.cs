@@ -19,6 +19,7 @@ public class WeaponPanel : MonoBehaviour
             var weaponInventoryItem = weaponPanelObject.GetComponent<WeaponInventoryItem>();
 
             weaponPanels.Add(weaponInventoryItem.weaponID, weaponInventoryItem);
+            weaponInventoryItem.gameObject.SetActive(false);
         }
     }
 
@@ -31,4 +32,14 @@ public class WeaponPanel : MonoBehaviour
         weaponPanels[weaponID].transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = true;
         
     }
+    // Method updates the panel to only show unlocked weapons
+    public void updatePanels(List<int> ownedWeaponIDs)
+    {
+       foreach(int weaponID in ownedWeaponIDs)
+        {
+            // Only set the unlocked weapons to active
+            weaponPanels[weaponID].gameObject.SetActive(true);
+        }
+    }
+                
 }

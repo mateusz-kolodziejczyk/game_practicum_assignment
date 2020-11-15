@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float health = 100;
+    [SerializeField]
+    private float maxHealth = 100;
     public float Health { get; set; }
 
     [SerializeField]
@@ -20,7 +22,7 @@ public class Player : MonoBehaviour
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
     }
 
-    public void ChangeHealth(float amountToChange)
+    public void LowerHealth(float amountToChange)
     {
         health -= amountToChange;
         healthText.text = "Health: " + health;
@@ -29,6 +31,16 @@ public class Player : MonoBehaviour
             gameManagement.changeLives(false);
             Die();
         }
+    }
+
+    public void IncreaseHealth(float amountToChange)
+    {
+        health += amountToChange;
+        if(health > maxHealth)
+        {
+            health = maxHealth;
+        }
+        healthText.text = "Health: " + health;
     }
 
     private void Die()

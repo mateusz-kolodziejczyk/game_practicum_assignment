@@ -16,6 +16,8 @@ public class WeaponManagement : MonoBehaviour
     IEnumerator shootAutomatic;
     GameManagement gameManagement;
 
+    public Weapon ActiveWeapon { get { return activeWeapon; } set { activeWeapon = value; } }
+
     private void Awake()
     {
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
