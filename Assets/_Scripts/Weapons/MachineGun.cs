@@ -37,12 +37,13 @@ public class MachineGun : AutomaticWeapon
     // Properties
     public override float BulletSpread { get { return bulletSpread; } set { bulletSpread = value; } }
     public override int WeaponID { get; set; } = 2;
+    public override int MaxAmmo { get { return maxAmmo; } set { maxAmmo = value; } }
 
 
     // Methods
     private void Start()
     {
-        BulletSpread = bulletSpread;
+
     }
     public override void ShootSingle(Camera camera, GameObject character, AudioSource audioSource)
     {
@@ -124,6 +125,8 @@ public class MachineGun : AutomaticWeapon
         {
             addedVelocity = character.transform.forward * forwardCharacterVelocity;
         }
+
+
         var instantiatedBullet = Instantiate(bulletPrefab, bulletEmitter.transform.position, bulletEmitter.transform.rotation);
 
         var bulletDirection = (targetPoint - bulletEmitter.transform.position).normalized * 20 + addedVelocity + CalculateSpread(character.transform);
@@ -133,6 +136,9 @@ public class MachineGun : AutomaticWeapon
 
         bulletScript.IsFriendly = true;
         bulletScript.Damage = damage;
+        // Ammo
+        CurrentAmmo--;
+        setAmmoText();
         // Audio
         audioSource.clip = shootingNoise;
         audioSource.Play();

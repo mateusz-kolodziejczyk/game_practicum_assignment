@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WeaponManagement : MonoBehaviour
 {
@@ -21,18 +22,26 @@ public class WeaponManagement : MonoBehaviour
     }
     void Update()
     {
+        if(Time.timeScale == 0)
+        {
+            // If game is paused dont do anything
+            return;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
-            // Run the shoot multiple script if its an automatic weapon
-            if (activeWeapon is AutomaticWeapon automaticWeapon)
+            if(activeWeapon.CurrentAmmo > 0)
             {
-                shootAutomatic = automaticWeapon.ShootAutomatic(firstPersonCamera, character, GetComponent<AudioSource>());
-                StartCoroutine(shootAutomatic);
-            }
-            else
-            {
-                activeWeapon.ShootSingle(firstPersonCamera, character, GetComponent<AudioSource>());
+                // Run the shoot multiple script if its an automatic weapon
+                if (activeWeapon is AutomaticWeapon automaticWeapon)
+                {
+                    shootAutomatic = automaticWeapon.ShootAutomatic(firstPersonCamera, character, GetComponent<AudioSource>());
+                    StartCoroutine(shootAutomatic);
+                }
+                else
+                {
+                    activeWeapon.ShootSingle(firstPersonCamera, character, GetComponent<AudioSource>());
+                }
             }
         }
         // Switching weapons
@@ -71,6 +80,7 @@ public class WeaponManagement : MonoBehaviour
         activeWeapon = gameManagement.WeaponsInventory[gameManagement.ActiveWeaponID];
         // Activate new weapon
         activeWeapon.gameObject.SetActive(true);
+        activeWeapon.setAmmoText();
     }
     private void switchWeaponByIndex(int weaponIndex)
     {

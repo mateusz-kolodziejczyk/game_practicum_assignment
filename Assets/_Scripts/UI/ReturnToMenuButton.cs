@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ReturnToMenuButton : MonoBehaviour
 {
@@ -8,12 +9,9 @@ public class ReturnToMenuButton : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>(); 
+        gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
+        var returnToMenuButton = GetComponent<Button>();
+        returnToMenuButton.onClick.AddListener(gameManagement.LoadMainMenu);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

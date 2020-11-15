@@ -25,6 +25,10 @@ public class BasicEnemy : Enemy
     public override float Damage { get { return damage; } set { damage = value; } }
     public override float TimeBetweenAttacks { get { return timeBetweenAttacks; } set { timeBetweenAttacks = value; } }
     public override float Health { get { return health; } set { health = value; } }
+    public override Material EnemyDamagedMaterial { get { return enemyDamagedMaterial; } set { enemyDamagedMaterial = value; } }
+    public override Material OriginalMaterial { get { return originalMaterial; } set { originalMaterial = value; } }
+    public override Renderer EnemyRenderer { get { return enemyRenderer; } set { enemyRenderer = value; } }
+    public override IEnumerator DamagedColorCoroutine { get { return damagedColorCoroutine; } set { damagedColorCoroutine = value; } }
 
     // Private variables
     private bool isAttacking = false;
@@ -59,28 +63,6 @@ public class BasicEnemy : Enemy
             }
             yield return null;
         }
-    }
-
-    public override void TakeDamage(float damageAmount)
-    {
-        health -= damageAmount;
-        if (damagedColorCoroutine != null)
-        {
-            StopCoroutine(damagedColorCoroutine);
-        }
-        damagedColorCoroutine = ChangeMaterial(enemyDamagedMaterial, 0.15f);
-        StartCoroutine(damagedColorCoroutine);
-        if (health < 0.0f)
-        {
-            Die();
-        }
-    }
-
-    IEnumerator ChangeMaterial(Material material, float time)
-    {
-        enemyRenderer.material = enemyDamagedMaterial;
-        yield return new WaitForSeconds(time);
-        enemyRenderer.material = originalMaterial;
     }
 
     public override void PlayAwareNoise()

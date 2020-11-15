@@ -34,9 +34,12 @@ public class SingleShot : Weapon
     // Properties
     public override float BulletSpread { get { return bulletSpread; } set { bulletSpread = value; } }
     public override int WeaponID { get; set; } = 1;
+    public override int MaxAmmo { get { return maxAmmo; } set { maxAmmo = value; } }
 
 
-
+    private void Start()
+    {
+    }
     // Methods
     public override void ShootSingle(Camera camera, GameObject character, AudioSource audioSource)
     {
@@ -68,7 +71,9 @@ public class SingleShot : Weapon
 
         bulletScript.IsFriendly = true;
         bulletScript.Damage = damage;
-
+        // Ammo
+        CurrentAmmo--;
+        setAmmoText();
         // Audio
         audioSource.clip = shootingNoise;
         audioSource.Play();
