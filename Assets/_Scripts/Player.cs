@@ -12,7 +12,6 @@ public class Player : MonoBehaviour
     private float maxHealth = 100;
     public float Health { get; set; }
 
-    [SerializeField]
     private Text healthText;
 
     private GameManagement gameManagement;
@@ -20,6 +19,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
+        healthText = GameObject.FindWithTag("HealthText").GetComponent<Text>();
     }
 
     public void LowerHealth(float amountToChange)

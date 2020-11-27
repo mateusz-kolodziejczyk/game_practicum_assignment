@@ -62,3 +62,6 @@ MonoBehaviour:
   wall: {fileID: 1001465472570709673, guid: 099acf04939dcf34492a6b9ba4f97756, type: 3}
   requiredItem: {fileID: 4034963279359400915, guid: 76c66fca094f1c548be2423d58bff0fa,
     type: 3}
+  baseEnemyTypes:
+  - {fileID: 6876507452352436326, guid: 87481bdd59c1da14cb0ecf16d91692af, type: 3}
+  NumberOfLevels: 3

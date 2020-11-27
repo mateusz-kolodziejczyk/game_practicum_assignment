@@ -21,6 +21,9 @@ TagManager:
   - LivesText
   - WeaponManagement
   - Waypoint
+  - Ground
+  - LocalNavMeshBuilder
+  - HealthText
   layers:
   - Default
   - TransparentFX

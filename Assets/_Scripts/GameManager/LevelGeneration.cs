@@ -8,6 +8,7 @@ public enum MapObjectType
     Wall,
     Player,
     RequiredItem,
+    Enemy,
 }
 
 struct Level
@@ -15,6 +16,7 @@ struct Level
     public MapObjectType[,] levelMap;
     public int numberOfItems;
     public int[] playerPosition;
+    public List<(int x, int y)> enemyPositions;
 }
 public class LevelGeneration : MonoBehaviour
 {
@@ -24,11 +26,14 @@ public class LevelGeneration : MonoBehaviour
     GameObject wall;
     [SerializeField]
     GameObject requiredItem;
+    // This is for basic enemy types i.e. non bosses
+    [SerializeField]
+    List<GameObject> baseEnemyTypes;
+    LocalNavMeshBuilder localNavMeshBuilder;
 
-    // Store all levels in a list
+    // Store all levels
     List<Level> levels;
 
-    int[] playerPosition = new int[2];
 
     [SerializeField]
     int NumberOfLevels = 3;
@@ -36,6 +41,7 @@ public class LevelGeneration : MonoBehaviour
     void Awake()
     {
         levels = new List<Level>();
+        localNavMeshBuilder = GameObject.FindWithTag("LocalNavMeshBuilder").GetComponent<LocalNavMeshBuilder>();
         CacheLevelInfo();
     }
     // Read each level from file on startup and cache the important information in arrays
@@ -43,20 +49,26 @@ public class LevelGeneration : MonoBehaviour
     {
         for(int i = 1; i <= NumberOfLevels; i++)
         {
-            ReadFromImage("level" + i);
+            ReadFromImage("level2");
         }
     }
 
     void ReadFromImage(string imageName)
     {
-        Texture2D image = (Texture2D)Resources.Load("level1", typeof(Texture2D));
+        Texture2D image = (Texture2D)Resources.Load(imageName, typeof(Texture2D));
 
         var levelMap = new MapObjectType[image.width, image.height];
+        localNavMeshBuilder.m_Size.x = image.width*11;
+        localNavMeshBuilder.m_Size.z = image.height*11;
         int requiredItems = 0;
         int[] playerPosition = new int[2];
+        // Use tuples for easy of retrieval
+        var enemyPositions = new List<(int x, int y)>();
 
+        Debug.Log("New Level");
         for (int x = 0; x < image.width; x++)
         {
+            var s = "";
             for (int y = 0; y < image.height; y++)
             {
                 var pixel = image.GetPixel(x, y);
@@ -71,6 +83,7 @@ public class LevelGeneration : MonoBehaviour
                 }
                 else if (pixel == Color.green)
                 {
+                    Debug.Log("Player added");
                     levelMap[x, y] = MapObjectType.Player;
                     playerPosition[0] = x;
                     playerPosition[1] = y;
@@ -80,10 +93,21 @@ public class LevelGeneration : MonoBehaviour
                     levelMap[x, y] = MapObjectType.RequiredItem;
                     requiredItems++;
                 }
+                else if(pixel == Color.red)
+                {
+                    // Have to instantiate enemies after waypoints, so log their position
+                    enemyPositions.Add((x, y));
+                }
+                s += (int)levelMap[x, y];
             }
+            Debug.Log(s);
+        }
+        levels.Add(new Level { levelMap = levelMap, numberOfItems = requiredItems, playerPosition = playerPosition, enemyPositions = enemyPositions });
+        foreach(var (x,y) in enemyPositions)
+        {
+            Debug.Log(x + "," + y);
         }
 
-        levels.Add(new Level { levelMap = levelMap, numberOfItems = requiredItems, playerPosition = playerPosition });
         
     }
 
@@ -106,23 +130,36 @@ public class LevelGeneration : MonoBehaviour
                     case MapObjectType.Empty:
                         break;
                     case MapObjectType.Wall:
-                        Instantiate(wall, new Vector3((mapWidth / 2 * 10) - x * 10, 1.5f, (mapHeight / 2 * 10) - y * 10),
-                            Quaternion.identity);
+                        InstantiateObject(wall, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.Player:
-                        playerObject = Instantiate(player, new Vector3((mapWidth / 2 * 10) - currentLevel.playerPosition[0] * 10, 1.5f, (mapHeight / 2 * 10) - currentLevel.playerPosition[1] * 10),
-                         Quaternion.identity);
+                        playerObject = InstantiateObject(player, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.RequiredItem:
-                        Instantiate(requiredItem, new Vector3((mapWidth / 2 * 10) - x * 10, 1.5f, (mapHeight / 2 * 10) - y * 10),
-                            Quaternion.identity);
+                        InstantiateObject(requiredItem, x, y, mapWidth, mapHeight);
                         break;
                     default:
                         break;
                 }
             }
         }
+        SpawnEnemies(currentLevel);
         return playerObject;
+    }
+
+    GameObject InstantiateObject(GameObject objectToInstantiate, int x, int y, int mapWidth, int mapHeight)
+    {
+        return Instantiate(objectToInstantiate, new Vector3((mapWidth / 2 * 10) -  x * 10, 1.5f, (mapHeight / 2 * 10) - y * 10),
+                            Quaternion.identity);
+    }
+
+    void SpawnEnemies(Level level)
+    {
+        foreach(var (x, y) in level.enemyPositions)
+        {
+            Debug.Log("enemy added");
+            InstantiateObject(baseEnemyTypes[0], x, y, level.levelMap.GetLength(0), level.levelMap.GetLength(1));
+        }
     }
 
 }
