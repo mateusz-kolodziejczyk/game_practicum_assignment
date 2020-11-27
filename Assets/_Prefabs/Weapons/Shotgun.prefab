@@ -339,9 +339,10 @@ MonoBehaviour:
   damage: 20
   bulletPrefab: {fileID: 481988425118987910, guid: 260eceb8f749c8b46b35062bf7ec06c7,
     type: 3}
+  timeBetweenShots: 0
   bulletEmitter: {fileID: 8747546746778542927}
   shootingNoise: {fileID: 8300000, guid: cf023fa2eb9e00a45ac3fabd6a4c1061, type: 3}
-  bulletRotation: {x: 0, y: 0, z: 0}
+  accurateRange: 0
 --- !u!1 &8747546746778542927
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,11 @@ public class Turret : MonoBehaviour
 
     [SerializeField]
     private float timeBetweenShots = 2f;
-    // Update is called once per frame
+
+    private void Awake()
+    {
+        target = GameObject.FindWithTag("Player");
+    }
     void Update()
     {
         if (CanSeePlayer())

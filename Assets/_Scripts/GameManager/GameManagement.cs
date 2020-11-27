@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Security.Policy;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +15,12 @@ public class GameManagement : MonoBehaviour
 {
     public static GameManagement instance;
     public int PlayerScore { get; set; } = 0;
+
+    LevelGeneration levelGeneration;
+    [SerializeField]
+    GameObject HUD;
+    [SerializeField]
+    GameObject player;
     // UI
     Text itemProgressText;
     Text scoreText;
@@ -63,14 +68,13 @@ public class GameManagement : MonoBehaviour
 
     void Awake()
     {
+        levelGeneration = GetComponent<LevelGeneration>();
 
         // start the game off with only 1 weapon index equal to the single shooter one
         UnlockedWeaponIDs.Add(1);
-        UnlockedWeaponIDs.Add(2);
         CurrentLives = MaxLives;
         // Only for testing if starting inside a level
 
-        playerController = GameObject.FindWithTag("Player").GetComponent<BaseFirstPersonController>();
 
         // Adding the multipiers
         difficultyMultipliers.Add(DifficultyLevel.Easy, 0.7f);
@@ -149,7 +153,7 @@ public class GameManagement : MonoBehaviour
     }
 
     // Player Lives
-    public void changeLives(bool increase)
+    public void ChangeLives(bool increase)
     {
         if (increase)
         {
@@ -190,7 +194,7 @@ public class GameManagement : MonoBehaviour
 
         weaponPanel.switchWeaponHighlight(ActiveWeaponID);
 
-        startShowPanelCoroutine();
+        StartShowPanelCoroutine();
     }
 
     // Adjust enemy values like health/damage/attack speed here
@@ -216,7 +220,7 @@ public class GameManagement : MonoBehaviour
             ActiveWeaponID = weaponIndex;
             weaponPanel.switchWeaponHighlight(ActiveWeaponID);
 
-            startShowPanelCoroutine();
+            StartShowPanelCoroutine();
             return true;
         }
         else
@@ -238,7 +242,7 @@ public class GameManagement : MonoBehaviour
         if (itemProgress >= requiredItemsAmount)
         {
             Debug.Log("Logd");
-            UnlockWeapon(3);
+            UnlockWeapon(ActiveWeaponID+1);
             OpenBossEntrance();
         }
     }
@@ -251,11 +255,11 @@ public class GameManagement : MonoBehaviour
             UnlockedWeaponIDs.Add(weaponID);
             weaponPanel.updatePanels(UnlockedWeaponIDs);
             // Show panel to indicate there is a new weapon
-            startShowPanelCoroutine();
+            StartShowPanelCoroutine();
         }
     }
 
-    void startShowPanelCoroutine()
+    void StartShowPanelCoroutine()
     {
         if(showWeaponPanel != null)
         {
@@ -323,6 +327,11 @@ public class GameManagement : MonoBehaviour
             // Only look for these things in non menu indexes and non game over(game over is always the last index)
             if (scene.buildIndex > 1 && scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1)
             {
+               
+                Instantiate(HUD);
+                // Generate level by number currently 2 non game scenes
+                playerController = levelGeneration.GenerateLevel(scene.buildIndex-2, player).GetComponent<BaseFirstPersonController>(); 
+
                 SetupWeaponInventory();
                 // Add all enemies in the level into an array
                 var enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -346,6 +355,7 @@ public class GameManagement : MonoBehaviour
                 SetLivesText();
                 itemProgress = 0;
 
+                //Find the active weapon, set it to active
                 var weaponManagement = GameObject.FindWithTag("WeaponManagement").GetComponent<WeaponManagement>();
                 weaponManagement.ActiveWeapon = WeaponsInventory[ActiveWeaponID];
 
@@ -354,6 +364,8 @@ public class GameManagement : MonoBehaviour
             {
                 // Clear all weapons
                 WeaponsInventory.Clear();
+                UnlockedWeaponIDs.Clear();
+                UnlockedWeaponIDs.Add(1);
                 // unlock the cursor on loading the menu(if you're coming back from playing)
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;

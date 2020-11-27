@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
         healthText.text = "Health: " + health;
         if (health <= 0)
         {
-            gameManagement.changeLives(false);
+            gameManagement.ChangeLives(false);
             Die();
         }
     }

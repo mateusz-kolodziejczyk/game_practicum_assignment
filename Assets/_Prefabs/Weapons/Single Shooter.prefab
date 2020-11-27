@@ -341,7 +341,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 2
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -369,5 +369,7 @@ MonoBehaviour:
   damage: 15
   bulletPrefab: {fileID: 481988425118987910, guid: 260eceb8f749c8b46b35062bf7ec06c7,
     type: 3}
+  timeBetweenShots: 0
   bulletEmitter: {fileID: 5601467326541259861}
   shootingNoise: {fileID: 8300000, guid: cf023fa2eb9e00a45ac3fabd6a4c1061, type: 3}
+  accurateRange: 0

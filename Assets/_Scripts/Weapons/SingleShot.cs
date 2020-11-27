@@ -37,9 +37,6 @@ public class SingleShot : Weapon
     public override int MaxAmmo { get { return maxAmmo; } set { maxAmmo = value; } }
 
 
-    private void Start()
-    {
-    }
     // Methods
     public override void ShootSingle(Camera camera, GameObject character, AudioSource audioSource)
     {

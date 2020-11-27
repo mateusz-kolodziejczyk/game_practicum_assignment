@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6107035231876587852}
   - component: {fileID: 6107035231876587855}
+  - component: {fileID: 1676238553486773288}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManagement
@@ -43,3 +44,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5422ac04bde3d84e9be3af32ac6394b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HUD: {fileID: 5974615660878229341, guid: 3e0bda6540dbf4648a0b2978acaa84ae, type: 3}
+  player: {fileID: 3243602092740633961, guid: 182c0620d6b13bd4eb9c9d07ce46e437, type: 3}
+--- !u!114 &1676238553486773288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6107035231876587854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df8fcda0bac63ed4e8161e62771ba0cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ground: {fileID: 0}
+  wall: {fileID: 1001465472570709673, guid: 099acf04939dcf34492a6b9ba4f97756, type: 3}
+  requiredItem: {fileID: 4034963279359400915, guid: 76c66fca094f1c548be2423d58bff0fa,
+    type: 3}
