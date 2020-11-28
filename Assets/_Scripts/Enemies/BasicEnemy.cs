@@ -70,23 +70,23 @@ public class BasicEnemy : Enemy
         EnemyAudioSource.clip = awareNoise;
         EnemyAudioSource.Play();
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             Debug.Log("Collision");
             if (!isAttacking)
             {
                 isAttacking = true;
-                attackCoroutine = Attack(collision.collider.GetComponent<Player>());
+                attackCoroutine = Attack(other.GetComponent<Player>());
                 StartCoroutine(attackCoroutine);
             }
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             Debug.Log("Collision Exit");
             isAttacking = false;

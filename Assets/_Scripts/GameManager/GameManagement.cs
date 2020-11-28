@@ -50,8 +50,7 @@ public class GameManagement : MonoBehaviour
     public int ActiveWeaponID { get; set; } = 1;
     WeaponPanel weaponPanel;
 
-    // Goals
-    int requiredItemsAmount = 3;
+    public int RequiredItemsAmount { get; set; } = 3;
     // Difficulty 
     Dropdown difficultySelection;
     public DifficultyLevel CurrentDifficulty { get; set; } = DifficultyLevel.Hard;
@@ -61,7 +60,6 @@ public class GameManagement : MonoBehaviour
 
     BaseFirstPersonController playerController;
 
-    //WeaponManagement weaponManagement;
 
     IEnumerator showWeaponPanel;
 
@@ -238,8 +236,8 @@ public class GameManagement : MonoBehaviour
     public void AddToItemProgress()
     {
         itemProgress++;
-        itemProgressText.text = "Items Found: " + itemProgress + "/" + requiredItemsAmount;
-        if (itemProgress >= requiredItemsAmount)
+        itemProgressText.text = "Items Found: " + itemProgress + "/" + RequiredItemsAmount;
+        if (itemProgress >= RequiredItemsAmount)
         {
             Debug.Log("Logd");
             UnlockWeapon(ActiveWeaponID+1);

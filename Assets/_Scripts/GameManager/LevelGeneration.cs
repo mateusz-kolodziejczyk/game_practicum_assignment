@@ -9,6 +9,9 @@ public enum MapObjectType
     Player,
     RequiredItem,
     Enemy,
+    Boss,
+    BossEntry,
+    LevelExit
 }
 
 struct Level
@@ -26,9 +29,18 @@ public class LevelGeneration : MonoBehaviour
     GameObject wall;
     [SerializeField]
     GameObject requiredItem;
+    // Use the same object for both exit/entry, just change the tag when instantiated.
+    [SerializeField]
+    GameObject bossExitEntryDoor;
+    [SerializeField]
+    GameObject levelExitTrigger;
+
+
     // This is for basic enemy types i.e. non bosses
     [SerializeField]
     List<GameObject> baseEnemyTypes;
+    [SerializeField]
+    List<GameObject> bosses;
     LocalNavMeshBuilder localNavMeshBuilder;
 
     // Store all levels
@@ -65,14 +77,12 @@ public class LevelGeneration : MonoBehaviour
         // Use tuples for easy of retrieval
         var enemyPositions = new List<(int x, int y)>();
 
-        Debug.Log("New Level");
         for (int x = 0; x < image.width; x++)
         {
-            var s = "";
             for (int y = 0; y < image.height; y++)
             {
                 var pixel = image.GetPixel(x, y);
-                if (pixel == Color.white)
+                if (pixel == Color.white || pixel == Color.gray)
                 {
                     levelMap[x, y] = MapObjectType.Empty;
 
@@ -98,9 +108,20 @@ public class LevelGeneration : MonoBehaviour
                     // Have to instantiate enemies after waypoints, so log their position
                     enemyPositions.Add((x, y));
                 }
-                s += (int)levelMap[x, y];
+                else if(pixel  == Color.magenta)
+                {
+                    levelMap[x, y] = MapObjectType.Boss;
+                }
+                else if(pixel.r > 0.95 && pixel.g > 0.95 && pixel.b < 0.1)
+                {
+                    Debug.Log("Yeet");
+                    levelMap[x, y] = MapObjectType.BossEntry;
+                }
+                else if(pixel == Color.cyan)
+                {
+                    levelMap[x, y] = MapObjectType.LevelExit;
+                }
             }
-            Debug.Log(s);
         }
         levels.Add(new Level { levelMap = levelMap, numberOfItems = requiredItems, playerPosition = playerPosition, enemyPositions = enemyPositions });
         foreach(var (x,y) in enemyPositions)
@@ -120,6 +141,7 @@ public class LevelGeneration : MonoBehaviour
         int mapHeight = currentLevel.levelMap.GetLength(1);
         ground.transform.localScale = new Vector3(mapWidth * 1.5f, 1, mapHeight * 1.5f);
 
+        (int x, int y) bossPosition = (0,0);
         GameObject playerObject = null;
         for (int x = 0; x < mapWidth; x++)
         {
@@ -138,11 +160,26 @@ public class LevelGeneration : MonoBehaviour
                     case MapObjectType.RequiredItem:
                         InstantiateObject(requiredItem, x, y, mapWidth, mapHeight);
                         break;
+                    case MapObjectType.Boss:
+                        bossPosition = (x, y);
+                        break;
+                    case MapObjectType.BossEntry:
+                        // Set the tag to entry
+                        InstantiateObject(bossExitEntryDoor, x, y, mapWidth, mapHeight).tag = "BossEntranceDoor";
+                        break;
+                    case MapObjectType.LevelExit:
+                        // Set the tag to exit
+                        InstantiateObject(bossExitEntryDoor, x, y, mapWidth, mapHeight).tag = "LevelExitDoor";
+                        InstantiateObject(levelExitTrigger, x, y, mapWidth, mapHeight);
+                        break;
                     default:
                         break;
                 }
             }
         }
+        // Instantiate boss and enemies after the player has been instantiated
+        InstantiateObject(bosses[0], bossPosition.x, bossPosition.y, mapWidth, mapHeight);
+        GetComponent<GameManagement>().RequiredItemsAmount = currentLevel.numberOfItems;
         SpawnEnemies(currentLevel);
         return playerObject;
     }

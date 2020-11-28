@@ -13,11 +13,11 @@ GameObject:
   - component: {fileID: 2395279887118272546}
   - component: {fileID: 2395279887118272547}
   - component: {fileID: 2395279887118272556}
-  - component: {fileID: 6876507452352436307}
   - component: {fileID: 1341727570359889009}
   - component: {fileID: 9102897746929947541}
   - component: {fileID: 9102897748667511364}
   - component: {fileID: 1693427717}
+  - component: {fileID: 9091043464606481595}
   m_Layer: 0
   m_Name: Boss 1
   m_TagString: Enemy
@@ -66,8 +66,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 2395279887118272532}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.50000006
-  m_Speed: 15
+  m_Radius: 1
+  m_Speed: 8
   m_Acceleration: 20
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -75,8 +75,8 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 0.9999999
-  m_BaseOffset: 0
+  m_Height: 3
+  m_BaseOffset: 1.3
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!136 &2395279887118272547
@@ -89,10 +89,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.8
-  m_Height: 1.9114528
+  m_Radius: 1.2
+  m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 0.9116374, z: 0}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!95 &2395279887118272556
 Animator:
   serializedVersion: 3
@@ -112,25 +112,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &6876507452352436307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2395279887118272532}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a321082577919eb488c45757786a0fd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 100
-  damage: 10
-  timeBetweenAttacks: 1.5
-  awareNoise: {fileID: 8300000, guid: f3243faff305ced4d801e84c51dd8dfb, type: 3}
-  score: 100
-  enemyDamagedMaterial: {fileID: 2100000, guid: bef53dbc88431a943b3897fbd45ee4e2,
-    type: 2}
 --- !u!114 &1341727570359889009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,6 +328,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
+  maxWayPointRange: 40
+--- !u!114 &9091043464606481595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395279887118272532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 949db0f2e0c1fe542aadd02fc71c7af6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 500
+  damage: 20
+  timeBetweenAttacks: 1
+  awareNoise: {fileID: 8300000, guid: f3243faff305ced4d801e84c51dd8dfb, type: 3}
+  score: 500
+  enemyDamagedMaterial: {fileID: 2100000, guid: bef53dbc88431a943b3897fbd45ee4e2,
+    type: 2}
 --- !u!1 &8388375448129181592
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,8 +375,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8388375448129181592}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.65296316, y: 0.45690107, z: 0.7080994}
+  m_LocalPosition: {x: 0, y: -1.1641, z: 0}
+  m_LocalScale: {x: 1.5296316, y: 1.0703365, z: 1.6587938}
   m_Children: []
   m_Father: {fileID: 2395279887118272552}
   m_RootOrder: 1
@@ -1611,11 +1612,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4438700912050984, guid: b057ea2a8dfb7544fa2448a2e1357367, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.27
       objectReference: {fileID: 0}
     - target: {fileID: 4438700912050984, guid: b057ea2a8dfb7544fa2448a2e1357367, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.053829
       objectReference: {fileID: 0}
     - target: {fileID: 4438700912050984, guid: b057ea2a8dfb7544fa2448a2e1357367, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1651,15 +1652,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4438700912050984, guid: b057ea2a8dfb7544fa2448a2e1357367, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.8238
       objectReference: {fileID: 0}
     - target: {fileID: 4438700912050984, guid: b057ea2a8dfb7544fa2448a2e1357367, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 1.8238
       objectReference: {fileID: 0}
     - target: {fileID: 4438700912050984, guid: b057ea2a8dfb7544fa2448a2e1357367, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 1.8238
       objectReference: {fileID: 0}
     - target: {fileID: 95753207625120232, guid: b057ea2a8dfb7544fa2448a2e1357367,
         type: 3}

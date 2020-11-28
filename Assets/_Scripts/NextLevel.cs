@@ -16,7 +16,7 @@ public class NextLevel : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            gameManagement.LoadMainMenu();
+            gameManagement.LoadNextLevel();
         }
     }
 }
