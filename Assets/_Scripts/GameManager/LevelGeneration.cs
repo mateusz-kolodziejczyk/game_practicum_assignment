@@ -11,7 +11,8 @@ public enum MapObjectType
     Enemy,
     Boss,
     BossEntry,
-    LevelExit
+    LevelExit,
+    ItemPickup
 }
 
 struct Level
@@ -41,6 +42,8 @@ public class LevelGeneration : MonoBehaviour
     List<GameObject> baseEnemyTypes;
     [SerializeField]
     List<GameObject> bosses;
+    [SerializeField]
+    List<GameObject> itemPickups;
     LocalNavMeshBuilder localNavMeshBuilder;
 
     // Store all levels
@@ -59,7 +62,7 @@ public class LevelGeneration : MonoBehaviour
     // Read each level from file on startup and cache the important information in arrays
     void CacheLevelInfo()
     {
-        for(int i = 1; i <= NumberOfLevels; i++)
+        for (int i = 1; i <= NumberOfLevels; i++)
         {
             ReadFromImage("level2");
         }
@@ -70,8 +73,8 @@ public class LevelGeneration : MonoBehaviour
         Texture2D image = (Texture2D)Resources.Load(imageName, typeof(Texture2D));
 
         var levelMap = new MapObjectType[image.width, image.height];
-        localNavMeshBuilder.m_Size.x = image.width*11;
-        localNavMeshBuilder.m_Size.z = image.height*11;
+        localNavMeshBuilder.m_Size.x = image.width * 11;
+        localNavMeshBuilder.m_Size.z = image.height * 11;
         int requiredItems = 0;
         int[] playerPosition = new int[2];
         // Use tuples for easy of retrieval
@@ -82,7 +85,7 @@ public class LevelGeneration : MonoBehaviour
             for (int y = 0; y < image.height; y++)
             {
                 var pixel = image.GetPixel(x, y);
-                if (pixel == Color.white || pixel == Color.gray)
+                if (pixel == Color.white)
                 {
                     levelMap[x, y] = MapObjectType.Empty;
 
@@ -93,43 +96,42 @@ public class LevelGeneration : MonoBehaviour
                 }
                 else if (pixel == Color.green)
                 {
-                    Debug.Log("Player added");
                     levelMap[x, y] = MapObjectType.Player;
                     playerPosition[0] = x;
                     playerPosition[1] = y;
                 }
-                else if(pixel == Color.blue)
+                else if (pixel == Color.blue)
                 {
                     levelMap[x, y] = MapObjectType.RequiredItem;
                     requiredItems++;
                 }
-                else if(pixel == Color.red)
+                else if (pixel == Color.red)
                 {
                     // Have to instantiate enemies after waypoints, so log their position
                     enemyPositions.Add((x, y));
                 }
-                else if(pixel  == Color.magenta)
+                else if (pixel == Color.magenta)
                 {
                     levelMap[x, y] = MapObjectType.Boss;
                 }
-                else if(pixel.r > 0.95 && pixel.g > 0.95 && pixel.b < 0.1)
+                else if (pixel.r > 0.95 && pixel.g > 0.95 && pixel.b < 0.1)
                 {
-                    Debug.Log("Yeet");
                     levelMap[x, y] = MapObjectType.BossEntry;
                 }
-                else if(pixel == Color.cyan)
+                else if (pixel == Color.cyan)
                 {
                     levelMap[x, y] = MapObjectType.LevelExit;
+                }
+                else if ((pixel.r >= 0.46 && pixel.r <= 0.54) && (pixel.g >= 0.46 && pixel.g <= 0.54) && (pixel.b >= 0.46 && pixel.b <= 0.54))
+                {
+                    levelMap[x, y] = MapObjectType.ItemPickup;
                 }
             }
         }
         levels.Add(new Level { levelMap = levelMap, numberOfItems = requiredItems, playerPosition = playerPosition, enemyPositions = enemyPositions });
-        foreach(var (x,y) in enemyPositions)
-        {
-            Debug.Log(x + "," + y);
-        }
 
-        
+
+
     }
 
     // Returns the instantiated player object for further use
@@ -141,13 +143,13 @@ public class LevelGeneration : MonoBehaviour
         int mapHeight = currentLevel.levelMap.GetLength(1);
         ground.transform.localScale = new Vector3(mapWidth * 1.5f, 1, mapHeight * 1.5f);
 
-        (int x, int y) bossPosition = (0,0);
+        (int x, int y) bossPosition = (0, 0);
         GameObject playerObject = null;
         for (int x = 0; x < mapWidth; x++)
         {
             for (int y = 0; y < mapHeight; y++)
             {
-                switch (currentLevel.levelMap[x,y])
+                switch (currentLevel.levelMap[x, y])
                 {
                     case MapObjectType.Empty:
                         break;
@@ -172,6 +174,14 @@ public class LevelGeneration : MonoBehaviour
                         InstantiateObject(bossExitEntryDoor, x, y, mapWidth, mapHeight).tag = "LevelExitDoor";
                         InstantiateObject(levelExitTrigger, x, y, mapWidth, mapHeight);
                         break;
+                    case MapObjectType.ItemPickup:
+                        // This will make sure there are spots without either
+                        int index = Random.Range(0, itemPickups.Count + 1);
+                        if (index < itemPickups.Count)
+                        {
+                            InstantiateObject(itemPickups[Random.Range(0, itemPickups.Count)], x, y, mapWidth, mapHeight);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -186,13 +196,13 @@ public class LevelGeneration : MonoBehaviour
 
     GameObject InstantiateObject(GameObject objectToInstantiate, int x, int y, int mapWidth, int mapHeight)
     {
-        return Instantiate(objectToInstantiate, new Vector3((mapWidth / 2 * 10) -  x * 10, 1.5f, (mapHeight / 2 * 10) - y * 10),
+        return Instantiate(objectToInstantiate, new Vector3((mapWidth / 2 * 10) - x * 10, 1.5f, (mapHeight / 2 * 10) - y * 10),
                             Quaternion.identity);
     }
 
     void SpawnEnemies(Level level)
     {
-        foreach(var (x, y) in level.enemyPositions)
+        foreach (var (x, y) in level.enemyPositions)
         {
             Debug.Log("enemy added");
             InstantiateObject(baseEnemyTypes[0], x, y, level.levelMap.GetLength(0), level.levelMap.GetLength(1));
