@@ -24,6 +24,9 @@ public class Player : MonoBehaviour
         playerSource = GetComponent<AudioSource>();
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         healthText = GameObject.FindWithTag("HealthText").GetComponent<Text>();
+        maxHealth = gameManagement.MaxHealth;
+        health = maxHealth;
+        SetHealthText();
     }
 
     public void LowerHealth(float amountToChange)
@@ -31,7 +34,7 @@ public class Player : MonoBehaviour
         health -= amountToChange;
         playerSource.clip = hurtNoise;
         playerSource.Play();
-        healthText.text = "Health: " + health;
+        SetHealthText();
         if (health <= 0)
         {
             gameManagement.ChangeLives(false);
@@ -46,6 +49,19 @@ public class Player : MonoBehaviour
         {
             health = maxHealth;
         }
+        SetHealthText();
+    }
+
+    public void IncreaseMaxHealth(float amountToChange)
+    {
+        maxHealth += amountToChange;
+        health = maxHealth;
+        gameManagement.MaxHealth = maxHealth;
+        SetHealthText();
+    }
+
+    private void SetHealthText()
+    {
         healthText.text = "Health: " + health;
     }
 

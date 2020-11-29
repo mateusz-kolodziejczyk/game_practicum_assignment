@@ -21,15 +21,11 @@ public class Bullet : MonoBehaviour
             collider.gameObject.GetComponent<Enemy>().TakeDamage(Damage);
             Destroy(gameObject);
         }
-        else if (collider.tag == "Player")
+        else if (collider.CompareTag("Player"))
         {
-            if (IsFriendly)
+            if (!IsFriendly)
             {
-                // Dont damage player
-            }
-            else
-            {
-                // 
+                collider.GetComponent<Player>().LowerHealth(Damage);
             }
         }
         else if (collider.CompareTag("Collectable"))
@@ -39,6 +35,10 @@ public class Bullet : MonoBehaviour
         else if (collider.CompareTag("PlayerBullet"))
         {
             // Don't destroy if it hits a player bullet
+        }
+        else if(collider.CompareTag("Enemy") && !IsFriendly)
+        {
+            //Dont destroy if its unfriendly and hits enemy
         }
         else
         {

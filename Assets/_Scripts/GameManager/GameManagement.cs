@@ -29,6 +29,7 @@ public class GameManagement : MonoBehaviour
     Text scoreText;
     Text muteText;
     Text livesText;
+    Text timeText;
     GameObject exitConfirmText;
 
     GameObject ingameMenu;
@@ -48,6 +49,7 @@ public class GameManagement : MonoBehaviour
     // Player Lives
     public int MaxLives { get; set; } = 3;
     public int CurrentLives { get; set; }
+    public float MaxHealth { get; set; } = 100;
 
 
 
@@ -73,6 +75,9 @@ public class GameManagement : MonoBehaviour
     IEnumerator quitGame;
     bool quitConfirm = false;
 
+    float levelTimer;
+
+    float dynamicDifficultyMultiplier = 1;
 
     void Awake()
     {
@@ -114,6 +119,8 @@ public class GameManagement : MonoBehaviour
 
     private void Update()
     {
+        levelTimer += Time.deltaTime;
+        updateTimeText();
         if (Input.GetKeyDown("m"))
         {
             Mute();
@@ -234,9 +241,9 @@ public class GameManagement : MonoBehaviour
         foreach (Enemy enemy in enemiesOnLevel)
         {
             // Multiply the variables by the value of the multipliers gotten using the key
-            enemy.MaxHealth *= difficultyMultipliers[CurrentDifficulty];
-            enemy.Health *= difficultyMultipliers[CurrentDifficulty];
-            enemy.Damage *= difficultyMultipliers[CurrentDifficulty];
+            enemy.MaxHealth *= difficultyMultipliers[CurrentDifficulty] * dynamicDifficultyMultiplier;
+            enemy.Health *= difficultyMultipliers[CurrentDifficulty]* dynamicDifficultyMultiplier;
+            enemy.Damage *= difficultyMultipliers[CurrentDifficulty]* dynamicDifficultyMultiplier;
             // Lower = more dangeorus so divide 1 by the number
             enemy.TimeBetweenAttacks *= 1f / difficultyMultipliers[CurrentDifficulty];
         }
@@ -320,6 +327,8 @@ public class GameManagement : MonoBehaviour
 
     public void LoadNextLevel()
     {
+        // Check the timer
+        DifficultyOnTimer();
         int currentLevel = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentLevel + 1);
     }
@@ -363,7 +372,7 @@ public class GameManagement : MonoBehaviour
             // Only look for these things in non menu indexes and non game over(game over is always the last index)
             if (scene.buildIndex > 1 && scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1)
             {
-
+                levelTimer = 0;
                 Instantiate(HUD);
                 ingameMenu = Instantiate(ingameMenuObject);
                 ingameMenu.SetActive(false);
@@ -393,6 +402,7 @@ public class GameManagement : MonoBehaviour
                 SetLivesText();
                 itemProgress = 0;
                 SetItemProgressText();
+                updateTimeText();
 
                 //Find the active weapon, set it to active
                 var weaponManagement = GameObject.FindWithTag("WeaponManagement").GetComponent<WeaponManagement>();
@@ -401,6 +411,7 @@ public class GameManagement : MonoBehaviour
             }
             else if (scene.buildIndex == 0 || scene.buildIndex == SceneManager.sceneCountInBuildSettings - 1)
             {
+                levelTimer = 0;
                 // Clear all weapons
                 WeaponsInventory.Clear();
                 UnlockedWeaponIDs.Clear();
@@ -426,6 +437,7 @@ public class GameManagement : MonoBehaviour
         scoreText = GameObject.FindWithTag("Score Text").GetComponent<Text>();
         muteText = GameObject.FindWithTag("MuteText").GetComponent<Text>();
         livesText = GameObject.FindWithTag("LivesText").GetComponent<Text>();
+        timeText = GameObject.FindWithTag("TimeText").GetComponent<Text>();
         exitConfirmText = GameObject.FindWithTag("ExitConfirmText");
         exitConfirmText.SetActive(false);
     }
@@ -481,6 +493,14 @@ public class GameManagement : MonoBehaviour
         livesText.text = "Lives: " + CurrentLives;
     }
 
+    void updateTimeText()
+    {
+        int minutes = (int)levelTimer/60;
+        int seconds = (int)levelTimer - minutes*60;
+        string secondsAsString = seconds >= 10 ? seconds.ToString() : "0" + seconds;
+        timeText.text = "Time: " + minutes + ":" + secondsAsString;
+    }
+
     // Sound
     public void Mute()
     {
@@ -530,6 +550,21 @@ public class GameManagement : MonoBehaviour
     public void OpenBossEntrance()
     {
         Destroy(bossEntranceDoor);
+    }
+
+    // Change difficulty dynamically based on how fast the level was finished
+    private void DifficultyOnTimer()
+    {
+        // Value is a placeholder, will increase/decrease difficulty as a ratio of averagetime to actual time
+        dynamicDifficultyMultiplier =  180 / levelTimer;
+        if(dynamicDifficultyMultiplier > 1.25f)
+        {
+            dynamicDifficultyMultiplier = 1.25f;
+        }
+        else if(dynamicDifficultyMultiplier < 0.8f)
+        {
+            dynamicDifficultyMultiplier = 0.8f;
+        }
     }
 
 }

@@ -33,6 +33,7 @@ public class BasicEnemy : Enemy
     public override Renderer EnemyRenderer { get { return enemyRenderer; } set { enemyRenderer = value; } }
     public override IEnumerator DamagedColorCoroutine { get { return damagedColorCoroutine; } set { damagedColorCoroutine = value; } }
     public override GameObject HealthBar { get { return healthBar; } set { healthBar = value; } }
+    public override Transform Target{ get; set; }
 
     // Private variables
     private bool isAttacking = false;
@@ -48,15 +49,24 @@ public class BasicEnemy : Enemy
     private void Awake()
     {
         ai = GetComponent<BasicAI>();
+        Target = ai.target;
         MaxHealth = health;
         enemyRenderer = GetComponentInChildren<Renderer>();
         originalMaterial = enemyRenderer.material;
 
-        attackTimer = timeBetweenAttacks - 0.1f;
+        attackTimer = timeBetweenAttacks*0.5f;
         TimeBetweenAttacks = timeBetweenAttacks;
         EnemyAudioSource = GetComponent<AudioSource>();
         GamesManager = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
 
+    }
+    public override void Update()
+    {
+        if(Target == null)
+        {
+            Target = ai.target;
+        }
+        base.Update();
     }
     public override IEnumerator Attack(Player player)
     {
@@ -97,6 +107,7 @@ public class BasicEnemy : Enemy
     {
         if (other.CompareTag("Player"))
         {
+            attackTimer = timeBetweenAttacks * 0.5f;
             isAttacking = false;
             ai.Attack(timeBetweenAttacks, false, attackAnimation.length);
         }

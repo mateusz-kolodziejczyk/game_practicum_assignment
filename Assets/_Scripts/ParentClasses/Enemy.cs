@@ -19,6 +19,7 @@ public abstract class Enemy : MonoBehaviour
     public abstract Renderer EnemyRenderer { get; set; }
     public abstract IEnumerator DamagedColorCoroutine { get; set; }
     public abstract GameObject HealthBar {get; set;}
+    public abstract Transform Target { get; set; }
 
     public abstract IEnumerator Attack(Player player);
     public void TakeDamage(float damageAmount)
@@ -55,9 +56,9 @@ public abstract class Enemy : MonoBehaviour
     public virtual void Update()
     {
         // Only rotate if its active
-        if(HealthBar != null && HealthBar.activeInHierarchy)
+        if(HealthBar != null && HealthBar.activeInHierarchy && Target != null)
         {
-            Vector3 v3 = GetComponent<BasicAI>().target.position - HealthBar.transform.parent.position;
+            Vector3 v3 = Target.position - HealthBar.transform.parent.position;
             v3.y = 0.0f;
             HealthBar.transform.parent.rotation = Quaternion.LookRotation(-v3);
         }

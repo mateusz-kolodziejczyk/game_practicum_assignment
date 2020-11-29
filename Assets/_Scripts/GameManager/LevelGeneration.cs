@@ -18,9 +18,10 @@ public enum MapObjectType
 
 struct Level
 {
+    public int id;
     public MapObjectType[,] levelMap;
     public int numberOfItems;
-    public int[] playerPosition;
+    public List<(int x, int y)> playerPositions;
     public List<(int x, int y)> enemyPositions;
 }
 public class LevelGeneration : MonoBehaviour
@@ -36,6 +37,8 @@ public class LevelGeneration : MonoBehaviour
     GameObject bossExitEntryDoor;
     [SerializeField]
     GameObject levelExitTrigger;
+    [SerializeField]
+    GameObject waypoint;
 
 
     // This is for basic enemy types i.e. non bosses
@@ -75,7 +78,8 @@ public class LevelGeneration : MonoBehaviour
         var levelMap = new MapObjectType[image.width, image.height];
 
         int requiredItems = 0;
-        int[] playerPosition = new int[2];
+
+        var playerPositions = new List<(int x, int y)>();
         // Use tuples for easy of retrieval
         var enemyPositions = new List<(int x, int y)>();
 
@@ -96,8 +100,7 @@ public class LevelGeneration : MonoBehaviour
                 else if (pixel == Color.green)
                 {
                     levelMap[x, y] = MapObjectType.Player;
-                    playerPosition[0] = x;
-                    playerPosition[1] = y;
+                    playerPositions.Add((x, y));
                 }
                 else if (pixel == Color.blue)
                 {
@@ -107,6 +110,7 @@ public class LevelGeneration : MonoBehaviour
                 else if (pixel == Color.red)
                 {
                     // Have to instantiate enemies after waypoints, so log their position
+                    levelMap[x, y] = MapObjectType.Enemy;
                     enemyPositions.Add((x, y));
                 }
                 else if (pixel == Color.magenta)
@@ -127,10 +131,7 @@ public class LevelGeneration : MonoBehaviour
                 }
             }
         }
-        levels.Add(new Level { levelMap = levelMap, numberOfItems = requiredItems, playerPosition = playerPosition, enemyPositions = enemyPositions });
-
-
-
+        levels.Add(new Level { id = levels.Count+1, levelMap = levelMap, numberOfItems = requiredItems, playerPositions = playerPositions, enemyPositions = enemyPositions });
     }
 
     // Returns the instantiated player object for further use
@@ -158,13 +159,15 @@ public class LevelGeneration : MonoBehaviour
                         InstantiateObject(wall, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.Player:
-                        playerObject = InstantiateObject(player, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.RequiredItem:
                         InstantiateObject(requiredItem, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.Boss:
                         bossPosition = (x, y);
+                        break;
+                    case MapObjectType.Enemy:
+                        InstantiateObject(waypoint, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.BossEntry:
                         // Set the tag to entry
@@ -188,6 +191,9 @@ public class LevelGeneration : MonoBehaviour
                 }
             }
         }
+        int startingPositionIndex = Random.Range(0, currentLevel.playerPositions.Count);
+        var startingPosition = currentLevel.playerPositions[startingPositionIndex];
+        playerObject = InstantiateObject(player, startingPosition.x, startingPosition.y, mapWidth, mapHeight);
         // Instantiate boss and enemies after the player has been instantiated
         GetComponent<GameManagement>().RequiredItemsAmount = currentLevel.numberOfItems;
         SpawnEnemies(currentLevel);
@@ -218,7 +224,17 @@ public class LevelGeneration : MonoBehaviour
     {
         foreach (var (x, y) in level.enemyPositions)
         {
-            InstantiateObject(baseEnemyTypes[0], x, y, level.levelMap.GetLength(0), level.levelMap.GetLength(1));
+            Debug.Log(level.id);
+            // First level only had melee enemies
+            if (level.id < 2)
+            {
+                InstantiateObject(baseEnemyTypes[0], x, y, level.levelMap.GetLength(0), level.levelMap.GetLength(1));
+            }
+            else
+            {
+                int enemyToInstantiate = Random.Range(0, baseEnemyTypes.Count);
+                InstantiateObject(baseEnemyTypes[enemyToInstantiate], x, y, level.levelMap.GetLength(0), level.levelMap.GetLength(1));
+            }
         }
     }
 

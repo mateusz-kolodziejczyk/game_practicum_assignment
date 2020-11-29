@@ -38,25 +38,25 @@ public class RangedAI : MonoBehaviour
 
     private void Update()
     {
-        if ((CanSeePlayer() || hasSeenThePlayer ))
+        if (agent.remainingDistance > agent.stoppingDistance)
         {
-                agent.SetDestination(startPosition);
-                hasSeenThePlayer = false;
-                enemy.StartStopAttack(false);
-
-            if (agent.remainingDistance > agent.stoppingDistance)
-            {
-                character.Move(agent.desiredVelocity, false);
-            }
-            else
-            {
-                character.Move(Vector3.zero, false);
-            }
+            character.Move(agent.desiredVelocity, false);
         }
         else
         {
-            fsmHandler.SetPatrolling();
-            agent.SetDestination(startPosition);
+            character.Move(Vector3.zero, false);
+        }
+
+        // If it can see the player rotate the transform to point towards the player, as it will keep attacking
+        if (CanSeePlayer())
+        {
+            transform.LookAt(target);
+            transform.Rotate(new Vector3(0, 30, 0));
+        }
+        // If it stops seeing the player stop attacking
+        else
+        {
+            fsmHandler.SetIdle();
             hasSeenThePlayer = false;
             enemy.StartStopAttack(false);
         }
@@ -71,7 +71,6 @@ public class RangedAI : MonoBehaviour
     {
         if (isAttacking)
         {
-
             fsmHandler.SetAttacking();
             fsmHandler.SyncAttackSpeed(attackTime, animationTime);
             // Set destination
@@ -95,6 +94,7 @@ public class RangedAI : MonoBehaviour
                 {
                     enemy.PlayAwareNoise();
                     enemy.StartStopAttack(true);
+                    Debug.Log("SeenPlayreReached");
                     fsmHandler.SetAttacking();
                     hasSeenThePlayer = true;
                 }

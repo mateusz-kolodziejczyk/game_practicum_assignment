@@ -25,6 +25,8 @@ public class BasicRanged : Enemy
     Transform bulletEmitter;
     [SerializeField]
     float bulletSpread;
+    [SerializeField]
+    AudioClip ShootingNoise;
 
     // Properties
     public override AudioSource EnemyAudioSource { get; set; }
@@ -40,49 +42,75 @@ public class BasicRanged : Enemy
     public override IEnumerator DamagedColorCoroutine { get { return damagedColorCoroutine; } set { damagedColorCoroutine = value; } }
     public override GameObject HealthBar { get { return healthBar; } set { healthBar = value; } }
 
+    public override Transform Target { get; set; }
+
     // Private variables
-    private bool isAttacking = false;
+    private bool isAttacking = true;
     private IEnumerator attackCoroutine;
     private float attackTimer;
     private Renderer enemyRenderer;
     private Material originalMaterial;
     private IEnumerator damagedColorCoroutine;
-    private BasicAI ai;
-    private Transform target;
+    private RangedAI ai;
     public AnimationClip attackAnimation;
 
 
 
     private void Awake()
     {
-        ai = GetComponent<BasicAI>();
-        target = ai.target;
+        ai = GetComponent<RangedAI>();
+        Target = ai.target;
         MaxHealth = health;
         enemyRenderer = GetComponentInChildren<Renderer>();
         originalMaterial = enemyRenderer.material;
 
-        attackTimer = timeBetweenAttacks - 0.1f;
+        attackTimer = timeBetweenAttacks * 0.5f;
         TimeBetweenAttacks = timeBetweenAttacks;
         EnemyAudioSource = GetComponent<AudioSource>();
         GamesManager = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
 
     }
+    public override void Update()
+    {
+        if (Target == null)
+        {
+            Target = ai.target;
+        }
+        base.Update();
+    }
     public override IEnumerator Attack(Player player)
     {
+        isAttacking = true;
         // Attack timer stays constant even if the enemy disengages
         while (isAttacking)
         {
             attackTimer += Time.deltaTime;
             if (attackTimer >= timeBetweenAttacks)
             {
+            Debug.Log("Shot Boolit");
                 var instantiatedBullet = Instantiate(bullet, bulletEmitter.transform.position, bulletEmitter.transform.rotation);
-                instantiatedBullet.GetComponent<Rigidbody>().velocity = (target.position - bulletEmitter.transform.position).normalized * 20 + CalculateSpread(transform);
+                var updatedTargetPosition = Target.position;
+                updatedTargetPosition.y += 1.5f;
+                instantiatedBullet.GetComponent<Rigidbody>().velocity = (updatedTargetPosition - bulletEmitter.transform.position).normalized * 20 + CalculateSpread(transform);
                 var bulletScript = instantiatedBullet.GetComponent<Bullet>();
+                // 20% chance of shooting a bigger and more powerful bullet
+                int attackType = Random.Range(0, 5);
 
+                if(attackType == 0)
+                {
+                    instantiatedBullet.transform.localScale *= 4;
+                    bulletScript.Damage = damage*2;
+                }
+                else
+                {
+
+                    instantiatedBullet.transform.localScale *= 2;
+                    bulletScript.Damage = damage;
+                }
                 bulletScript.IsFriendly = false;
-                bulletScript.Damage = damage;
-                player.LowerHealth(damage);
                 attackTimer = 0.0f;
+                EnemyAudioSource.clip = ShootingNoise;
+                EnemyAudioSource.Play();
             }
             yield return null;
         }
@@ -91,9 +119,14 @@ public class BasicRanged : Enemy
     public void StartStopAttack(bool attack)
     {
         // only start coroutine if not attacking
-        if (!isAttacking && attack)
+        if (attack)
         {
-            attackCoroutine = Attack(ai.target.GetComponent<Player>());
+            attackCoroutine = Attack(Target.GetComponent<Player>());
+            StartCoroutine(attackCoroutine);
+        }
+        else
+        {
+            attackTimer = timeBetweenAttacks * 0.5f;
         }
         isAttacking = attack;
     }

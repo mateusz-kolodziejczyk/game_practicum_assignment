@@ -55,6 +55,7 @@ public class BasicAI : MonoBehaviour
             // Only set a new position if the player is within the start position range
             if (target != null && Vector3.Distance(startPosition, target.position) <= movingRange && !fsmHandler.anim.GetBool("isAttacking"))
             {
+
                 agent.SetDestination(new Vector3(target.position.x, 0, target.position.z));
             }
             else if (fsmHandler.anim.GetBool("isAttacking"))
@@ -62,6 +63,7 @@ public class BasicAI : MonoBehaviour
                 var midwayPoint = (target.position + transform.position) / 1.5f;
                 // place it on the ground
                 midwayPoint.y = 0;
+
                 agent.SetDestination(transform.position);
             }
             else
@@ -77,6 +79,10 @@ public class BasicAI : MonoBehaviour
             {
                 character.Move(Vector3.zero, false);
             }
+        }
+        else
+        {
+            fsmHandler.IsPatrolling(true);
         }
     }
     public void SetTarget(Transform target)

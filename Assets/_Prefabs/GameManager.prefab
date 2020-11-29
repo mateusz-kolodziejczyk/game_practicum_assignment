@@ -68,8 +68,11 @@ MonoBehaviour:
     type: 3}
   levelExitTrigger: {fileID: 935550090846753449, guid: 0849f68e851d5284a9a0665784c3acb1,
     type: 3}
+  waypoint: {fileID: 1110167409761957026, guid: 671680a6aa516284096256ee7fd3721c,
+    type: 3}
   baseEnemyTypes:
   - {fileID: 6876507452352436326, guid: 87481bdd59c1da14cb0ecf16d91692af, type: 3}
+  - {fileID: 2105942809302384611, guid: 6732326b52213fa42a593be74d472073, type: 3}
   bosses:
   - {fileID: 2395279887118272532, guid: 0c98d0e8067e1f44f9934b84e59d9b11, type: 3}
   itemPickups:

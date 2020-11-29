@@ -11,7 +11,7 @@ public class EnemyHandleFSM : MonoBehaviour
 
     int WPIndex = 0;
     [SerializeField]
-    float maxWayPointRange = 10;
+    float maxWayPointRange = 30;
 
     float originalSpeed;
 
@@ -25,7 +25,7 @@ public class EnemyHandleFSM : MonoBehaviour
 
     public List<Transform> WaypointTransforms { get; set; } = new List<Transform>();
 
-    void Start()
+    public virtual void Start()
     {
         characterAI = GetComponent<BasicAI>();
         basicMovement = GetComponent<BasicMovement>();
@@ -93,10 +93,10 @@ public class EnemyHandleFSM : MonoBehaviour
 
         Debug.Log(attackAnimationLength);
 
-        anim.SetFloat("attackSpeedMultiplier", animationTime/attackTime);
+        anim.SetFloat("attackSpeedMultiplier", animationTime / attackTime);
 
     }
-    private void Update()
+    public virtual void Update()
     {
         info = anim.GetCurrentAnimatorStateInfo((0));
         if (info.IsName("Patrol") && WaypointTransforms.Count > 0)
@@ -108,7 +108,7 @@ public class EnemyHandleFSM : MonoBehaviour
             if (Vector3.Distance(transform.position, waypointTransformPosition) < 4 && WaypointTransforms.Count > 1)
             {
                 // New start position is the waypoint but on the floor(y = 0)
-                characterAI.StartPosition = new Vector3(waypointTransformPosition.x, 0, waypointTransformPosition.z);
+                    characterAI.StartPosition = new Vector3(waypointTransformPosition.x, 0, waypointTransformPosition.z);
                 int previousIndex = WPIndex;
                 int newIndex; do
                 {
@@ -117,7 +117,7 @@ public class EnemyHandleFSM : MonoBehaviour
                 } while (newIndex == previousIndex);
                 WPIndex = newIndex;
             }
-            else if(WaypointTransforms.Count == 1)
+            else if (WaypointTransforms.Count == 1 && Vector3.Distance(transform.position, waypointTransformPosition) < 1)
             {
                 IsPatrolling(false);
             }
@@ -128,7 +128,8 @@ public class EnemyHandleFSM : MonoBehaviour
     {
         // Created using help from https://answers.unity.com/questions/15735/field-of-view-using-raycasting.html
         var directionToWaypoint = waypointTransform.position - transform.position;
-        if (Physics.Raycast(transform.position, directionToWaypoint, out RaycastHit hit))
+        int layerMask =~ LayerMask.GetMask("Enemy");
+        if (Physics.Raycast(transform.position, directionToWaypoint, out RaycastHit hit, Mathf.Infinity, layerMask))
         {
             if (hit.collider.CompareTag("Waypoint"))
             {
