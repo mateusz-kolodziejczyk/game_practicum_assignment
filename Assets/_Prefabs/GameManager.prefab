@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HUD: {fileID: 5974615660878229341, guid: 3e0bda6540dbf4648a0b2978acaa84ae, type: 3}
+  ingameMenuObject: {fileID: 2156592627642031207, guid: b7e9be00bc748704baa9c4ba1babb547,
+    type: 3}
   player: {fileID: 3243602092740633961, guid: 182c0620d6b13bd4eb9c9d07ce46e437, type: 3}
 --- !u!114 &1676238553486773288
 MonoBehaviour:

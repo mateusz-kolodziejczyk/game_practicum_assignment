@@ -21,16 +21,23 @@ public class GameManagement : MonoBehaviour
     [SerializeField]
     GameObject HUD;
     [SerializeField]
+    GameObject ingameMenuObject;
+    [SerializeField]
     GameObject player;
     // UI
     Text itemProgressText;
     Text scoreText;
     Text muteText;
     Text livesText;
+    GameObject exitConfirmText;
 
+    GameObject ingameMenu;
     int itemProgress;
     bool isMute = false;
     bool isPaused = false;
+
+    // The unmuted sound volume will be stored here
+    float soundVolume = 1;
 
     GameObject levelExitDoor;
     GameObject bossEntranceDoor;
@@ -63,6 +70,8 @@ public class GameManagement : MonoBehaviour
 
 
     IEnumerator showWeaponPanel;
+    IEnumerator quitGame;
+    bool quitConfirm = false;
 
 
     void Awake()
@@ -111,12 +120,34 @@ public class GameManagement : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            if (!quitConfirm)
+            {
+                quitGame = QuitGame(3);
+                StartCoroutine(quitGame);
+            }
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
             PauseGame();
         }
+    }
+
+    private IEnumerator QuitGame(float maxTime)
+    {
+        quitConfirm = true;
+        float timePassed = 0;
+        exitConfirmText.SetActive(true);
+        while (timePassed < maxTime)
+        {
+            yield return null;
+            timePassed += Time.deltaTime;
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
+        }
+        exitConfirmText.SetActive(false);
+        quitConfirm = false;
     }
 
     // Methods
@@ -203,6 +234,7 @@ public class GameManagement : MonoBehaviour
         foreach (Enemy enemy in enemiesOnLevel)
         {
             // Multiply the variables by the value of the multipliers gotten using the key
+            enemy.MaxHealth *= difficultyMultipliers[CurrentDifficulty];
             enemy.Health *= difficultyMultipliers[CurrentDifficulty];
             enemy.Damage *= difficultyMultipliers[CurrentDifficulty];
             // Lower = more dangeorus so divide 1 by the number
@@ -241,7 +273,7 @@ public class GameManagement : MonoBehaviour
         if (itemProgress >= RequiredItemsAmount)
         {
             Debug.Log("Logd");
-            UnlockWeapon(UnlockedWeaponIDs.Last()+1);
+            UnlockWeapon(UnlockedWeaponIDs.Last() + 1);
             OpenBossEntrance();
         }
     }
@@ -265,7 +297,7 @@ public class GameManagement : MonoBehaviour
 
     void StartShowPanelCoroutine()
     {
-        if(showWeaponPanel != null)
+        if (showWeaponPanel != null)
         {
             StopCoroutine(showWeaponPanel);
         }
@@ -331,10 +363,12 @@ public class GameManagement : MonoBehaviour
             // Only look for these things in non menu indexes and non game over(game over is always the last index)
             if (scene.buildIndex > 1 && scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1)
             {
-               
+
                 Instantiate(HUD);
+                ingameMenu = Instantiate(ingameMenuObject);
+                ingameMenu.SetActive(false);
                 // Generate level by number currently 2 non game scenes
-                playerController = levelGeneration.GenerateLevel(scene.buildIndex-2, player).GetComponent<BaseFirstPersonController>(); 
+                playerController = levelGeneration.GenerateLevel(scene.buildIndex - 2, player).GetComponent<BaseFirstPersonController>();
 
                 SetupWeaponInventory();
                 // Add all enemies in the level into an array
@@ -392,6 +426,8 @@ public class GameManagement : MonoBehaviour
         scoreText = GameObject.FindWithTag("Score Text").GetComponent<Text>();
         muteText = GameObject.FindWithTag("MuteText").GetComponent<Text>();
         livesText = GameObject.FindWithTag("LivesText").GetComponent<Text>();
+        exitConfirmText = GameObject.FindWithTag("ExitConfirmText");
+        exitConfirmText.SetActive(false);
     }
 
     public void IncreaseAmmo(float multiplier)
@@ -445,23 +481,46 @@ public class GameManagement : MonoBehaviour
         livesText.text = "Lives: " + CurrentLives;
     }
 
-    void Mute()
+    // Sound
+    public void Mute()
     {
         // Done using help from https://answers.unity.com/questions/829987/how-to-make-mute-button.html
         isMute = !isMute;
-        AudioListener.volume = isMute ? 0 : 1;
+        AudioListener.volume = isMute ? 0 : soundVolume;
         UpdateMuteText();
+    }
+    public void Mute(bool toMute)
+    {
+        isMute = toMute;
+        AudioListener.volume = isMute ? 0 : soundVolume;
+        if (muteText != null)
+        {
+            UpdateMuteText();
+        }
+    }
+    public void Changevolume(float newVolume)
+    {
+        soundVolume = newVolume;
+        AudioListener.volume = isMute ? 0 : soundVolume;
     }
 
     // Done using help from  https://gamedevbeginner.com/the-right-way-to-pause-the-game-in-unity/
-    void PauseGame()
+    public void PauseGame()
     {
         isPaused = !isPaused;
         playerController.Pause(isPaused);
         // Set the timescale to 0 if paused, 1 if not
         Time.timeScale = isPaused ? 0 : 1;
-
-
+        if (isPaused)
+        {
+            ingameMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            ingameMenu.SetActive(false);
+        }
     }
     public void OpenLevelExit()
     {

@@ -10,14 +10,18 @@ public class Player : MonoBehaviour
     private float health = 100;
     [SerializeField]
     private float maxHealth = 100;
+    [SerializeField]
+    private AudioClip hurtNoise;
     public float Health { get; set; }
 
     private Text healthText;
 
     private GameManagement gameManagement;
+    private AudioSource playerSource;
 
     private void Awake()
     {
+        playerSource = GetComponent<AudioSource>();
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         healthText = GameObject.FindWithTag("HealthText").GetComponent<Text>();
     }
@@ -25,6 +29,8 @@ public class Player : MonoBehaviour
     public void LowerHealth(float amountToChange)
     {
         health -= amountToChange;
+        playerSource.clip = hurtNoise;
+        playerSource.Play();
         healthText.text = "Health: " + health;
         if (health <= 0)
         {

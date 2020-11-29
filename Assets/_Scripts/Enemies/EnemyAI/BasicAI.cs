@@ -19,6 +19,7 @@ public class BasicAI : MonoBehaviour
     private Vector3 startPosition;
     private float movingRange;
 
+
     public Vector3 StartPosition { get { return startPosition; } set { startPosition = value; } }
     private void Start()
     {
@@ -38,13 +39,13 @@ public class BasicAI : MonoBehaviour
         enemyAudioSource = GetComponent<AudioSource>();
     }
 
- 
+
     private void Update()
     {
         if ((CanSeePlayer() || hasSeenThePlayer))
         {
             // If the enemy is back at spawn after seeing the player, revert the enemy to nto having seen the player and make it play the idle animation again
-            if (Vector3.Distance(startPosition, transform.position) <= 3 && Vector3.Distance(agent.destination, startPosition) <= 0.5) 
+            if (Vector3.Distance(startPosition, transform.position) <= 3 && Vector3.Distance(agent.destination, startPosition) <= 0.5)
             {
                 fsmHandler.IsPatrolling(true);
                 hasSeenThePlayer = false;
@@ -52,9 +53,16 @@ public class BasicAI : MonoBehaviour
 
 
             // Only set a new position if the player is within the start position range
-            if (target != null && Vector3.Distance(startPosition, target.position) <= movingRange)
+            if (target != null && Vector3.Distance(startPosition, target.position) <= movingRange && !fsmHandler.anim.GetBool("isAttacking"))
             {
                 agent.SetDestination(new Vector3(target.position.x, 0, target.position.z));
+            }
+            else if (fsmHandler.anim.GetBool("isAttacking"))
+            {
+                var midwayPoint = (target.position + transform.position) / 1.5f;
+                // place it on the ground
+                midwayPoint.y = 0;
+                agent.SetDestination(transform.position);
             }
             else
             {
@@ -74,6 +82,22 @@ public class BasicAI : MonoBehaviour
     public void SetTarget(Transform target)
     {
         this.target = target;
+    }
+
+    // This will handle the animation and stopping of the character
+    public void Attack(float attackTime, bool isAttacking, float animationTime)
+    {
+        if (isAttacking)
+        {
+
+            fsmHandler.IsAttacking(true);
+            fsmHandler.SyncAttackSpeed(attackTime, animationTime);
+            // Set destination
+        }
+        else
+        {
+            fsmHandler.IsMoving(true);
+        }
     }
 
     bool CanSeePlayer()

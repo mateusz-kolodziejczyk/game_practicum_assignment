@@ -17,6 +17,8 @@ public class BasicEnemy : Enemy
     int score;
     [SerializeField]
     Material enemyDamagedMaterial;
+    [SerializeField]
+    GameObject healthBar;
 
     // Properties
     public override AudioSource EnemyAudioSource { get; set; }
@@ -25,10 +27,12 @@ public class BasicEnemy : Enemy
     public override float Damage { get { return damage; } set { damage = value; } }
     public override float TimeBetweenAttacks { get { return timeBetweenAttacks; } set { timeBetweenAttacks = value; } }
     public override float Health { get { return health; } set { health = value; } }
+    public override float MaxHealth { get; set; }
     public override Material EnemyDamagedMaterial { get { return enemyDamagedMaterial; } set { enemyDamagedMaterial = value; } }
     public override Material OriginalMaterial { get { return originalMaterial; } set { originalMaterial = value; } }
     public override Renderer EnemyRenderer { get { return enemyRenderer; } set { enemyRenderer = value; } }
     public override IEnumerator DamagedColorCoroutine { get { return damagedColorCoroutine; } set { damagedColorCoroutine = value; } }
+    public override GameObject HealthBar { get { return healthBar; } set { healthBar = value; } }
 
     // Private variables
     private bool isAttacking = false;
@@ -37,10 +41,14 @@ public class BasicEnemy : Enemy
     private Renderer enemyRenderer;
     private Material originalMaterial;
     private IEnumerator damagedColorCoroutine;
+    private BasicAI ai;
+    public AnimationClip attackAnimation;
 
 
     private void Awake()
     {
+        ai = GetComponent<BasicAI>();
+        MaxHealth = health;
         enemyRenderer = GetComponentInChildren<Renderer>();
         originalMaterial = enemyRenderer.material;
 
@@ -74,9 +82,10 @@ public class BasicEnemy : Enemy
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Collision");
             if (!isAttacking)
             {
+
+                ai.Attack(timeBetweenAttacks, true, attackAnimation.length);
                 isAttacking = true;
                 attackCoroutine = Attack(other.GetComponent<Player>());
                 StartCoroutine(attackCoroutine);
@@ -88,8 +97,8 @@ public class BasicEnemy : Enemy
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Collision Exit");
             isAttacking = false;
+            ai.Attack(timeBetweenAttacks, false, attackAnimation.length);
         }
     }
 }

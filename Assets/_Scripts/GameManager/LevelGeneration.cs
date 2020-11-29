@@ -218,7 +218,6 @@ public class LevelGeneration : MonoBehaviour
     {
         foreach (var (x, y) in level.enemyPositions)
         {
-            Debug.Log("enemy added");
             InstantiateObject(baseEnemyTypes[0], x, y, level.levelMap.GetLength(0), level.levelMap.GetLength(1));
         }
     }
