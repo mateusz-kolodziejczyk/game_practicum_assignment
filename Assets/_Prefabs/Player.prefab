@@ -720,7 +720,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4300000, guid: a06d7b9ab523e594f87b9028717ee7b6, type: 2}
     - target: {fileID: 8747546745951867445, guid: 9cf56dc41f3b3c4498f9cc76b90f9355,
         type: 3}
       propertyPath: m_SelectedEditorRenderState
@@ -831,7 +831,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4300000, guid: a06d7b9ab523e594f87b9028717ee7b6, type: 2}
     - target: {fileID: 8747546745951867445, guid: 9cf56dc41f3b3c4498f9cc76b90f9355,
         type: 3}
       propertyPath: m_SelectedEditorRenderState

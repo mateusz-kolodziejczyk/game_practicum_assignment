@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using ECM.Controllers;
+using System.Linq;
 public enum DifficultyLevel
 {
     Easy,
@@ -236,13 +237,18 @@ public class GameManagement : MonoBehaviour
     public void AddToItemProgress()
     {
         itemProgress++;
-        itemProgressText.text = "Items Found: " + itemProgress + "/" + RequiredItemsAmount;
+        SetItemProgressText();
         if (itemProgress >= RequiredItemsAmount)
         {
             Debug.Log("Logd");
-            UnlockWeapon(ActiveWeaponID+1);
+            UnlockWeapon(UnlockedWeaponIDs.Last()+1);
             OpenBossEntrance();
         }
+    }
+
+    public void SetItemProgressText()
+    {
+        itemProgressText.text = "Items Found: " + itemProgress + "/" + RequiredItemsAmount;
     }
 
     void UnlockWeapon(int weaponID)
@@ -352,6 +358,7 @@ public class GameManagement : MonoBehaviour
                 SetScoreText();
                 SetLivesText();
                 itemProgress = 0;
+                SetItemProgressText();
 
                 //Find the active weapon, set it to active
                 var weaponManagement = GameObject.FindWithTag("WeaponManagement").GetComponent<WeaponManagement>();

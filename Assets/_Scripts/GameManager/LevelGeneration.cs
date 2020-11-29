@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum MapObjectType
 {
@@ -56,7 +57,6 @@ public class LevelGeneration : MonoBehaviour
     void Awake()
     {
         levels = new List<Level>();
-        localNavMeshBuilder = GameObject.FindWithTag("LocalNavMeshBuilder").GetComponent<LocalNavMeshBuilder>();
         CacheLevelInfo();
     }
     // Read each level from file on startup and cache the important information in arrays
@@ -64,7 +64,7 @@ public class LevelGeneration : MonoBehaviour
     {
         for (int i = 1; i <= NumberOfLevels; i++)
         {
-            ReadFromImage("level2");
+            ReadFromImage("level" + i);
         }
     }
 
@@ -73,8 +73,7 @@ public class LevelGeneration : MonoBehaviour
         Texture2D image = (Texture2D)Resources.Load(imageName, typeof(Texture2D));
 
         var levelMap = new MapObjectType[image.width, image.height];
-        localNavMeshBuilder.m_Size.x = image.width * 11;
-        localNavMeshBuilder.m_Size.z = image.height * 11;
+
         int requiredItems = 0;
         int[] playerPosition = new int[2];
         // Use tuples for easy of retrieval
@@ -142,7 +141,9 @@ public class LevelGeneration : MonoBehaviour
         int mapWidth = currentLevel.levelMap.GetLength(0);
         int mapHeight = currentLevel.levelMap.GetLength(1);
         ground.transform.localScale = new Vector3(mapWidth * 1.5f, 1, mapHeight * 1.5f);
-
+        localNavMeshBuilder = GameObject.FindWithTag("LocalNavMeshBuilder").GetComponent<LocalNavMeshBuilder>();
+        localNavMeshBuilder.m_Size.x = mapWidth * 11;
+        localNavMeshBuilder.m_Size.z = mapHeight * 11;
         (int x, int y) bossPosition = (0, 0);
         GameObject playerObject = null;
         for (int x = 0; x < mapWidth; x++)
@@ -176,7 +177,7 @@ public class LevelGeneration : MonoBehaviour
                         break;
                     case MapObjectType.ItemPickup:
                         // This will make sure there are spots without either
-                        int index = Random.Range(0, itemPickups.Count + 1);
+                        int index = Random.Range(0, itemPickups.Count + 2);
                         if (index < itemPickups.Count)
                         {
                             InstantiateObject(itemPickups[Random.Range(0, itemPickups.Count)], x, y, mapWidth, mapHeight);
@@ -188,10 +189,23 @@ public class LevelGeneration : MonoBehaviour
             }
         }
         // Instantiate boss and enemies after the player has been instantiated
-        InstantiateObject(bosses[0], bossPosition.x, bossPosition.y, mapWidth, mapHeight);
         GetComponent<GameManagement>().RequiredItemsAmount = currentLevel.numberOfItems;
         SpawnEnemies(currentLevel);
+        // The boss gets stuck in a wall unless the navmeshagent is disabled and the boss is manually placed back to its position.
+        //InstantiateObject(bosses[0], bossPosition.x, bossPosition.y, mapWidth, mapHeight);
+        var bossCoroutine = BossNavigationPosition(bosses[0], bossPosition, mapWidth, mapHeight);
+        StartCoroutine(bossCoroutine);
         return playerObject;
+    }
+
+    IEnumerator BossNavigationPosition(GameObject boss, (int x, int y) bossPosition, int mapWidth, int mapHeight)
+    {
+        boss = InstantiateObject(bosses[0], bossPosition.x, bossPosition.y, mapWidth, mapHeight);
+        var bossAgent = boss.GetComponent<NavMeshAgent>();
+        bossAgent.enabled = false;
+        boss.transform.position = new Vector3((mapWidth / 2 * 10) - bossPosition.x * 10, 1.5f, (mapHeight / 2 * 10) - bossPosition.y * 10);
+        yield return new WaitForSeconds(0.5f);
+        bossAgent.enabled = true;
     }
 
     GameObject InstantiateObject(GameObject objectToInstantiate, int x, int y, int mapWidth, int mapHeight)

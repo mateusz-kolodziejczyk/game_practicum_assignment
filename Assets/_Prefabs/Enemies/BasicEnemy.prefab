@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  maxSeeDistance: 70
+  maxSeeDistance: 50
 --- !u!114 &1777271783
 MonoBehaviour:
   m_ObjectHideFlags: 0
