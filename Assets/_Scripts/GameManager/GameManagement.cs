@@ -412,6 +412,7 @@ public class GameManagement : MonoBehaviour
             else if (scene.buildIndex == 0 || scene.buildIndex == SceneManager.sceneCountInBuildSettings - 1)
             {
                 levelTimer = 0;
+                MaxHealth = 100;
                 // Clear all weapons
                 WeaponsInventory.Clear();
                 UnlockedWeaponIDs.Clear();

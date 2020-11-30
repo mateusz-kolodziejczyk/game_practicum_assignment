@@ -26,6 +26,7 @@ TagManager:
   - HealthText
   - OptionsMenu
   - ExitConfirmText
+  - TimeText
   layers:
   - Default
   - TransparentFX
