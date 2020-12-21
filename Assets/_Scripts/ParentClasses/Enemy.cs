@@ -21,6 +21,7 @@ public abstract class Enemy : MonoBehaviour
     public abstract GameObject HealthBar {get; set;}
     public abstract Transform Target { get; set; }
 
+    public List<GameObject> droppableItems;
     public abstract IEnumerator Attack(Player player);
     public void TakeDamage(float damageAmount)
     {
@@ -73,6 +74,13 @@ public abstract class Enemy : MonoBehaviour
     public virtual void Die()
     {
         GamesManager.AddToScore(Score);
+        GamesManager.AddToKillStreak();
+
+        int randomId = Random.Range(0, droppableItems.Count*5);
+        if(randomId < droppableItems.Count)
+        {
+            Instantiate(droppableItems[randomId], transform.position + new Vector3(0,2,0), Quaternion.identity);
+        }
         Destroy(gameObject);
     }
     public abstract void PlayAwareNoise();

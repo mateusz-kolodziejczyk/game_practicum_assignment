@@ -14,8 +14,6 @@ public class Shotgun : Weapon
     [SerializeField]
     private float bulletSpread = 1;
     [SerializeField]
-    private float damage = 20;
-    [SerializeField]
     private GameObject bulletPrefab;
     [SerializeField]
     private float timeBetweenShots;

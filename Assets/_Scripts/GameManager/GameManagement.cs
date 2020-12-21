@@ -73,6 +73,15 @@ public class GameManagement : MonoBehaviour
 
     IEnumerator showWeaponPanel;
     IEnumerator quitGame;
+
+    bool countingKillStreak = false;
+    IEnumerator killStreak;
+    int killStreakCount = 0;
+
+    IEnumerator takingDamage;
+    bool countingDamageTaken = false;
+    float damageTaken = 0;
+
     bool quitConfirm = false;
 
     float levelTimer;
@@ -119,8 +128,12 @@ public class GameManagement : MonoBehaviour
 
     private void Update()
     {
-        levelTimer += Time.deltaTime;
-        updateTimeText();
+        // Only update level timer if its inside level
+        if (SceneManager.GetActiveScene().buildIndex > 1 && SceneManager.GetActiveScene().buildIndex < SceneManager.sceneCountInBuildSettings - 1)
+        {
+            levelTimer += Time.deltaTime;
+            updateTimeText();
+        }
         if (Input.GetKeyDown("m"))
         {
             Mute();
@@ -242,13 +255,41 @@ public class GameManagement : MonoBehaviour
         {
             // Multiply the variables by the value of the multipliers gotten using the key
             enemy.MaxHealth *= difficultyMultipliers[CurrentDifficulty] * dynamicDifficultyMultiplier;
-            enemy.Health *= difficultyMultipliers[CurrentDifficulty]* dynamicDifficultyMultiplier;
-            enemy.Damage *= difficultyMultipliers[CurrentDifficulty]* dynamicDifficultyMultiplier;
+            enemy.Health *= difficultyMultipliers[CurrentDifficulty] * dynamicDifficultyMultiplier;
+            enemy.Damage *= difficultyMultipliers[CurrentDifficulty] * dynamicDifficultyMultiplier;
             // Lower = more dangeorus so divide 1 by the number
             enemy.TimeBetweenAttacks *= 1f / difficultyMultipliers[CurrentDifficulty];
         }
     }
+    // This function is specifically for adjusting abilities after the level spawned
+    private void AdjustEnemyAttributes(float difficultyMultiplier, bool divide, List<Enemy> enemies)
+    {
 
+        // Go through each enemy and change the attributes
+        foreach (Enemy enemy in enemies)
+        {
+            // Divide the values(used for going back after killstreak)
+            if (divide)
+            {
+                // Multiply the variables by the value of the multipliers gotten using the key
+                enemy.MaxHealth /= difficultyMultiplier;
+                enemy.Health /= difficultyMultiplier;
+                enemy.Damage /= difficultyMultiplier;
+                // Lower = more dangeorus so divide 1 by the number
+                enemy.TimeBetweenAttacks /= (1f / difficultyMultiplier);
+            }
+            else
+            {
+                // Multiply the variables by the value of the multipliers gotten using the key
+                enemy.MaxHealth *= difficultyMultiplier;
+                enemy.Health *= difficultyMultiplier;
+                enemy.Damage *= difficultyMultiplier;
+                Debug.Log("New Health: " + enemy.MaxHealth);
+                // Lower = more dangeorus so divide 1 by the number
+                enemy.TimeBetweenAttacks *= (1f / difficultyMultiplier);
+            }
+        }
+    }
 
     public bool ChangeWeaponByIndex(int weaponIndex)
     {
@@ -319,6 +360,115 @@ public class GameManagement : MonoBehaviour
         weaponPanel.gameObject.SetActive(false);
     }
 
+    // Kill Streak
+    // This manages the running of coroutines for killstreak.
+    public void AddToKillStreak()
+    {
+        killStreakCount++;
+        if (!countingKillStreak)
+        {
+            killStreak = StartKillStreak();
+            StartCoroutine(killStreak);
+        }
+    }
+
+    public IEnumerator StartKillStreak()
+    {
+        countingKillStreak = true;
+        // Wait 10 seconds and keep counting new kills.
+        yield return new WaitForSeconds(10);
+        var killStreakDifficultyAdjustment = KillStreakDifficultyManagement(killStreakCount);
+        StartCoroutine(killStreakDifficultyAdjustment);
+        killStreakCount = 0;
+        countingKillStreak = false;
+    }
+
+    // Kill streak only last a certain amount of time and they can overlap.
+    private IEnumerator KillStreakDifficultyManagement(int killStreakCount)
+    {
+
+        var enemies = GetCurrentEnemies();
+        var difficultyMultiplier = CalculateKillStreakDifficultyMultiplier(killStreakCount);
+        Debug.Log(difficultyMultiplier);
+        AdjustEnemyAttributes(difficultyMultiplier, false, enemies);
+
+        yield return new WaitForSeconds(20);
+
+        enemies = GetCurrentEnemies();
+        AdjustEnemyAttributes(difficultyMultiplier, true, enemies);
+
+    }
+
+    // Resets dynamic difficulty adjustment coroutines so they stop when a new level is launched.
+    void ResetDynamicDifficulty()
+    {
+        StopAllCoroutines();
+    }
+
+    public void AddToDamageCounter(float damage)
+    {
+        damageTaken += damage;
+        if (!countingDamageTaken)
+        {
+            takingDamage = StartDamageCounter();
+            StartCoroutine(takingDamage);
+        }
+    }
+
+    public void BoostDamage(float damageMultiplier)
+    {
+        foreach(var weapon in WeaponsInventory.Values)
+        {
+            weapon.BoostDamage(damageMultiplier);
+        }
+    }
+
+    IEnumerator StartDamageCounter()
+    {
+        countingDamageTaken = true;
+        yield return new WaitForSeconds(5);
+        StartCoroutine(DamageTakenDifficultyAdjustment(damageTaken));
+        damageTaken = 0;
+        countingDamageTaken = false;
+    }
+
+    IEnumerator DamageTakenDifficultyAdjustment(float damageTaken)
+    {
+        var enemies = GetCurrentEnemies();
+        var difficultyMultiplier = CalculateDamageTakenDifficultyMultiplier(damageTaken);
+        AdjustEnemyAttributes(difficultyMultiplier, false, enemies);
+
+        yield return new WaitForSeconds(20);
+
+        enemies = GetCurrentEnemies();
+        AdjustEnemyAttributes(difficultyMultiplier, true, enemies);
+    }
+
+
+    private List<Enemy> GetCurrentEnemies()
+    {
+        // Get current enemies
+        var enemyObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        var enemies = new List<Enemy>();
+        foreach (var enemyObject in enemyObjects)
+        {
+            enemies.Add(enemyObject.GetComponent<Enemy>());
+        }
+        return enemies;
+    }
+
+    private float CalculateKillStreakDifficultyMultiplier(int enemiesKilled)
+    {
+        // Use an exponent, the more enemies you kill the harder it becomes. One enmy kill streak is very inconsequential, 20 enmies would double their damage/health
+        return 1 * Mathf.Pow(1.03f, enemiesKilled);
+    }
+
+    private float CalculateDamageTakenDifficultyMultiplier(float damageTaken)
+    {
+        // The max decrease in health/damage is 0.7f given where damagetaken/maxhealth = 1
+        return 1 * Mathf.Pow(0.7f, damageTaken / MaxHealth);
+    }
+
     // Methods for loading scenes
     public void StartGame()
     {
@@ -372,6 +522,7 @@ public class GameManagement : MonoBehaviour
             // Only look for these things in non menu indexes and non game over(game over is always the last index)
             if (scene.buildIndex > 1 && scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1)
             {
+                ResetDynamicDifficulty();
                 levelTimer = 0;
                 Instantiate(HUD);
                 ingameMenu = Instantiate(ingameMenuObject);
@@ -496,8 +647,8 @@ public class GameManagement : MonoBehaviour
 
     void updateTimeText()
     {
-        int minutes = (int)levelTimer/60;
-        int seconds = (int)levelTimer - minutes*60;
+        int minutes = (int)levelTimer / 60;
+        int seconds = (int)levelTimer - minutes * 60;
         string secondsAsString = seconds >= 10 ? seconds.ToString() : "0" + seconds;
         timeText.text = "Time: " + minutes + ":" + secondsAsString;
     }
@@ -543,6 +694,7 @@ public class GameManagement : MonoBehaviour
             ingameMenu.SetActive(false);
         }
     }
+
     public void OpenLevelExit()
     {
         Destroy(levelExitDoor);
@@ -557,12 +709,12 @@ public class GameManagement : MonoBehaviour
     private void DifficultyOnTimer()
     {
         // Value is a placeholder, will increase/decrease difficulty as a ratio of averagetime to actual time
-        dynamicDifficultyMultiplier =  180 / levelTimer;
-        if(dynamicDifficultyMultiplier > 1.25f)
+        dynamicDifficultyMultiplier = 180 / levelTimer;
+        if (dynamicDifficultyMultiplier > 1.25f)
         {
             dynamicDifficultyMultiplier = 1.25f;
         }
-        else if(dynamicDifficultyMultiplier < 0.8f)
+        else if (dynamicDifficultyMultiplier < 0.8f)
         {
             dynamicDifficultyMultiplier = 0.8f;
         }

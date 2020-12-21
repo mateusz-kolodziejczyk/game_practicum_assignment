@@ -180,7 +180,7 @@ public class LevelGeneration : MonoBehaviour
                         break;
                     case MapObjectType.ItemPickup:
                         // This will make sure there are spots without either
-                        int index = Random.Range(0, itemPickups.Count + 2);
+                        int index = Random.Range(0, itemPickups.Count*2);
                         if (index < itemPickups.Count)
                         {
                             InstantiateObject(itemPickups[Random.Range(0, itemPickups.Count)], x, y, mapWidth, mapHeight);
@@ -224,7 +224,6 @@ public class LevelGeneration : MonoBehaviour
     {
         foreach (var (x, y) in level.enemyPositions)
         {
-            Debug.Log(level.id);
             // First level only had melee enemies
             if (level.id < 2)
             {

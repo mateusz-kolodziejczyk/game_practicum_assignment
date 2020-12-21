@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public abstract class Weapon : MonoBehaviour
 {
     private int currentAmmo;
+    
+    public float damage = 20;
     public Text AmmoText { get; set; }
     public abstract float BulletSpread { get; set; }
 
@@ -50,6 +52,18 @@ public abstract class Weapon : MonoBehaviour
     public void setAmmoText()
     {
         AmmoText.text = "Ammo: " + CurrentAmmo;
+    }
+
+    public void BoostDamage(float damageMultiplier)
+    {
+        StartCoroutine(IncreasingDamage(damageMultiplier));
+    }
+
+    private IEnumerator IncreasingDamage(float damageMultiplier)
+    {
+        damage *= damageMultiplier;
+        yield return new WaitForSeconds(10);
+        damage /= damageMultiplier;
     }
 
 }

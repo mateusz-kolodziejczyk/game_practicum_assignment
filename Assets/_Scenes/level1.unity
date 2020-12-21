@@ -357,6 +357,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1676238553486773288, guid: 8fe3d77b8c80237459b881250071d5ff,
+        type: 3}
+      propertyPath: itemPickups.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1676238553486773288, guid: 8fe3d77b8c80237459b881250071d5ff,
+        type: 3}
+      propertyPath: itemPickups.Array.data[2]
+      value: 
+      objectReference: {fileID: 2969713876564877837, guid: 67a322ea27766fc43a6f07ed6ccc52c6,
+        type: 3}
     - target: {fileID: 6107035231876587852, guid: 8fe3d77b8c80237459b881250071d5ff,
         type: 3}
       propertyPath: m_LocalPosition.x

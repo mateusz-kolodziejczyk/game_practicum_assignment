@@ -126,6 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a321082577919eb488c45757786a0fd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  droppableItems:
+  - {fileID: 3118804175032495542, guid: f1ad8dba247868b47ac7b89cf8aff5b7, type: 3}
+  - {fileID: 6746504354085184089, guid: d333668db2c141e469360bcd15563661, type: 3}
   health: 100
   damage: 10
   timeBetweenAttacks: 1.5

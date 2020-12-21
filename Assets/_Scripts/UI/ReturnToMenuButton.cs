@@ -12,6 +12,10 @@ public class ReturnToMenuButton : MonoBehaviour
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         var returnToMenuButton = GetComponent<Button>();
         returnToMenuButton.onClick.AddListener(gameManagement.LoadMainMenu);
+        returnToMenuButton.onClick.AddListener(delegate ()
+        {
+            gameManagement.GetComponent<AudioSource>().Play();
+        });
     }
 
 }

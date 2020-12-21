@@ -91,7 +91,6 @@ public class EnemyHandleFSM : MonoBehaviour
     public void SyncAttackSpeed(float attackTime, float animationTime)
     {
 
-        Debug.Log(attackAnimationLength);
 
         anim.SetFloat("attackSpeedMultiplier", animationTime / attackTime);
 

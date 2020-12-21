@@ -11,5 +11,9 @@ public class OptionsReturnGameButton : MonoBehaviour
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         var button = GetComponent<Button>();
         button.onClick.AddListener(gameManagement.PauseGame);
+        button.onClick.AddListener(delegate ()
+        {
+            gameManagement.GetComponent<AudioSource>().Play();
+        });
     }
 }

@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
             gameManagement.ChangeLives(false);
             Die();
         }
+        gameManagement.AddToDamageCounter(amountToChange);
     }
 
     public void IncreaseHealth(float amountToChange)
@@ -62,7 +63,7 @@ public class Player : MonoBehaviour
 
     private void SetHealthText()
     {
-        healthText.text = "Health: " + health;
+        healthText.text = "Health: " + System.Math.Round(health, 1);
     }
 
     private void Die()

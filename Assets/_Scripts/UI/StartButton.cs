@@ -12,6 +12,10 @@ public class StartButton : MonoBehaviour
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         startButton = GetComponent<Button>();
         startButton.onClick.AddListener(gameManagement.StartGame);
+        startButton.onClick.AddListener(delegate ()
+        {
+            gameManagement.GetComponent<AudioSource>().Play();
+        });
     }
 
 }

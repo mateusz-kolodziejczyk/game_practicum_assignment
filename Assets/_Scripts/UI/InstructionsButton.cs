@@ -11,6 +11,10 @@ public class InstructionsButton : MonoBehaviour
         gameManagement = GameObject.FindWithTag("GameManagement").GetComponent<GameManagement>();
         var instructionsButton = GetComponent<Button>();
         instructionsButton.onClick.AddListener(gameManagement.LoadInstructionScreen);
+        instructionsButton.onClick.AddListener(delegate ()
+        {
+            gameManagement.GetComponent<AudioSource>().Play();
+        });
     }
 
 }

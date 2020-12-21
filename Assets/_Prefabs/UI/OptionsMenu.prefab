@@ -1019,6 +1019,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f2c9cdec45a91d47b181485acc94c69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9131852819749503343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3955907897326668055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d7ae5840d6c7994389c0408c734977a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickNoise: {fileID: 8300000, guid: b8640aa63ee42ef4d903690dae1bffa4, type: 3}
 --- !u!1001 &4553547565693851500
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1139,7 +1152,7 @@ PrefabInstance:
     - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
         type: 3}
@@ -1171,18 +1184,48 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 9131852819749503343}
+    - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: PlayClickNoise, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlayNoise
+      objectReference: {fileID: 0}
+    - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 709112601150709373, guid: 909b27157e7b29d4aac656486d89028d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 709112601150709360, guid: 909b27157e7b29d4aac656486d89028d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 909b27157e7b29d4aac656486d89028d, type: 3}
---- !u!224 &3955907897326668048 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 709112601150709372, guid: 909b27157e7b29d4aac656486d89028d,
-    type: 3}
-  m_PrefabInstance: {fileID: 4553547565693851500}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3955907897326668055 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 709112601150709371, guid: 909b27157e7b29d4aac656486d89028d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4553547565693851500}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &3955907897326668048 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 709112601150709372, guid: 909b27157e7b29d4aac656486d89028d,
     type: 3}
   m_PrefabInstance: {fileID: 4553547565693851500}
   m_PrefabAsset: {fileID: 0}

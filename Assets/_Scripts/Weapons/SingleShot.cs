@@ -14,8 +14,6 @@ public class SingleShot : Weapon
     [SerializeField]
     private float bulletSpread = 0;
     [SerializeField]
-    private float damage = 20;
-    [SerializeField]
     private GameObject bulletPrefab;
     [SerializeField]
     private float timeBetweenShots;
