@@ -94,6 +94,8 @@ public class GameManagement : MonoBehaviour
 
         // start the game off with only 1 weapon index equal to the single shooter one
         UnlockedWeaponIDs.Add(1);
+        UnlockedWeaponIDs.Add(2);
+        UnlockedWeaponIDs.Add(3);
         CurrentLives = MaxLives;
         // Only for testing if starting inside a level
 
@@ -328,7 +330,7 @@ public class GameManagement : MonoBehaviour
 
     public void SetItemProgressText()
     {
-        itemProgressText.text = "Items Found: " + itemProgress + "/" + RequiredItemsAmount;
+        itemProgressText.text = "Weapon Parts Found: " + itemProgress + "/" + RequiredItemsAmount;
     }
 
     void UnlockWeapon(int weaponID)
@@ -460,7 +462,7 @@ public class GameManagement : MonoBehaviour
     private float CalculateKillStreakDifficultyMultiplier(int enemiesKilled)
     {
         // Use an exponent, the more enemies you kill the harder it becomes. One enmy kill streak is very inconsequential, 20 enmies would double their damage/health
-        return 1 * Mathf.Pow(1.03f, enemiesKilled);
+        return 1 * Mathf.Pow(1.02f, enemiesKilled);
     }
 
     private float CalculateDamageTakenDifficultyMultiplier(float damageTaken)

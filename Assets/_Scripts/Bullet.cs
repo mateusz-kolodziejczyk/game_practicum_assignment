@@ -40,6 +40,10 @@ public class Bullet : MonoBehaviour
         {
             //Dont destroy if its unfriendly and hits enemy
         }
+        else if (collider.CompareTag("Waypoint"))
+        {
+            // Dont destroy if it hits an invisible waypoint
+        }
         else
         {
             Destroy(gameObject);

@@ -1036,7 +1036,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Items Found: 0/3
+  m_Text: 'Weapon Parts Found: 0/3
 
 '
 --- !u!1 &5974615661083814096

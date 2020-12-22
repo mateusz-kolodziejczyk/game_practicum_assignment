@@ -337,9 +337,14 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "How to Play\n\nKill enemies or avoid them to collect items \nthat unlock
-    a new weapon and open the boss door.\nDefeat the boss to open a path to the next
-    level.\n\n"
+  m_Text: 'How to Play
+
+
+    Kill enemies or avoid them to collect weapon parts signified
+    by the green spanner icon to unlock a new weapon and unlock access to the boss.
+    Killing the boss unlocks the next level.
+
+'
 --- !u!222 &796684075
 CanvasRenderer:
   m_ObjectHideFlags: 0
