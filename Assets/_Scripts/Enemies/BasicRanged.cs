@@ -8,9 +8,9 @@ public class BasicRanged : Enemy
     [SerializeField]
     float health = 100;
     [SerializeField]
-    float damage = 10;
+    public float damage = 10;
     [SerializeField]
-    float timeBetweenAttacks = 1f;
+    public float timeBetweenAttacks = 1f;
     [SerializeField]
     AudioClip awareNoise;
     [SerializeField]
@@ -20,13 +20,13 @@ public class BasicRanged : Enemy
     [SerializeField]
     GameObject healthBar;
     [SerializeField]
-    GameObject bullet;
+    public GameObject bullet;
     [SerializeField]
-    Transform bulletEmitter;
+    public Transform bulletEmitter;
     [SerializeField]
     float bulletSpread;
     [SerializeField]
-    AudioClip ShootingNoise;
+    public AudioClip ShootingNoise;
 
     // Properties
     public override AudioSource EnemyAudioSource { get; set; }
@@ -44,10 +44,9 @@ public class BasicRanged : Enemy
 
     public override Transform Target { get; set; }
 
-    // Private variables
-    private bool isAttacking = true;
+    public bool isAttacking = true;
     private IEnumerator attackCoroutine;
-    private float attackTimer;
+    public float attackTimer;
     private Renderer enemyRenderer;
     private Material originalMaterial;
     private IEnumerator damagedColorCoroutine;
@@ -87,7 +86,6 @@ public class BasicRanged : Enemy
             attackTimer += Time.deltaTime;
             if (attackTimer >= timeBetweenAttacks)
             {
-            Debug.Log("Shot Boolit");
                 var instantiatedBullet = Instantiate(bullet, bulletEmitter.transform.position, bulletEmitter.transform.rotation);
                 var updatedTargetPosition = Target.position;
                 updatedTargetPosition.y += 1.5f;
@@ -133,7 +131,7 @@ public class BasicRanged : Enemy
 
     public Vector3 CalculateSpread(Transform characterTransform)
     {
-        float upSpread = Random.Range(-1f, 1f);
+        float upSpread = Random.Range(-0.5f, 0.5f);
         float rightSpread = Random.Range(-1f, 1f);
 
         var rightAdded = characterTransform.right.normalized * rightSpread * bulletSpread;

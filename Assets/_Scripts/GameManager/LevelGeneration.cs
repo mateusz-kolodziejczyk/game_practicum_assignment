@@ -163,7 +163,7 @@ public class LevelGeneration : MonoBehaviour
         localNavMeshBuilder = GameObject.FindWithTag("LocalNavMeshBuilder").GetComponent<LocalNavMeshBuilder>();
         localNavMeshBuilder.m_Size.x = mapWidth * 11;
         localNavMeshBuilder.m_Size.z = mapHeight * 11;
-        (int x, int y) bossPosition = (0, 0);
+        var bossPositions = new List<(int x, int y)>();
         GameObject playerObject = null;
         for (int x = 0; x < mapWidth; x++)
         {
@@ -184,7 +184,7 @@ public class LevelGeneration : MonoBehaviour
                         InstantiateObject(requiredItem, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.Boss:
-                        bossPosition = (x, y);
+                        bossPositions.Add((x, y));
                         break;
                     case MapObjectType.Enemy:
                         InstantiateObject(waypoint, x, y, mapWidth, mapHeight);
@@ -222,14 +222,17 @@ public class LevelGeneration : MonoBehaviour
         SpawnEnemies(currentLevel);
         // The boss gets stuck in a wall unless the navmeshagent is disabled and the boss is manually placed back to its position.
         //InstantiateObject(bosses[0], bossPosition.x, bossPosition.y, mapWidth, mapHeight);
-        var bossCoroutine = BossNavigationPosition(bosses[0], bossPosition, mapWidth, mapHeight);
-        StartCoroutine(bossCoroutine);
+        foreach(var bossPosition in bossPositions)
+        {
+            var bossCoroutine = BossNavigationPosition(bosses[currentLevel.id-1], bossPosition, mapWidth, mapHeight);
+            StartCoroutine(bossCoroutine);
+        }
         return playerObject;
     }
 
     IEnumerator BossNavigationPosition(GameObject boss, (int x, int y) bossPosition, int mapWidth, int mapHeight)
     {
-        boss = InstantiateObject(bosses[0], bossPosition.x, bossPosition.y, mapWidth, mapHeight);
+        boss = InstantiateObject(boss, bossPosition.x, bossPosition.y, mapWidth, mapHeight);
         var bossAgent = boss.GetComponent<NavMeshAgent>();
         bossAgent.enabled = false;
         boss.transform.position = new Vector3((mapWidth / 2 * 10) - bossPosition.x * 10, 1.5f, (mapHeight / 2 * 10) - bossPosition.y * 10);

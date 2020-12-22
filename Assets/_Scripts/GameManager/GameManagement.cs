@@ -286,7 +286,6 @@ public class GameManagement : MonoBehaviour
                 enemy.MaxHealth *= difficultyMultiplier;
                 enemy.Health *= difficultyMultiplier;
                 enemy.Damage *= difficultyMultiplier;
-                Debug.Log("New Health: " + enemy.MaxHealth);
                 // Lower = more dangeorus so divide 1 by the number
                 enemy.TimeBetweenAttacks *= (1f / difficultyMultiplier);
             }
@@ -535,9 +534,14 @@ public class GameManagement : MonoBehaviour
                 SetupWeaponInventory();
                 // Add all enemies in the level into an array
                 var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                var bosses = GameObject.FindGameObjectsWithTag("Boss");
                 foreach (var enemyGameObject in enemies)
                 {
                     enemiesOnLevel.Add(enemyGameObject.GetComponent<Enemy>());
+                }
+                foreach(var bossGameObject in bosses)
+                {
+                    enemiesOnLevel.Add(bossGameObject.GetComponent<Enemy>());
                 }
                 // Adjust enemy values
                 AdjustEnemyAttributes();

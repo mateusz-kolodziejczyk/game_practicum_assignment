@@ -94,7 +94,6 @@ public class RangedAI : MonoBehaviour
                 {
                     enemy.PlayAwareNoise();
                     enemy.StartStopAttack(true);
-                    Debug.Log("SeenPlayreReached");
                     fsmHandler.SetAttacking();
                     hasSeenThePlayer = true;
                 }

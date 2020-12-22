@@ -16,7 +16,7 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.CompareTag("Enemy") && IsFriendly)
+        if ((collider.CompareTag("Enemy") || collider.CompareTag("Boss")) && IsFriendly)
         {
             collider.gameObject.GetComponent<Enemy>().TakeDamage(Damage);
             Destroy(gameObject);
@@ -36,7 +36,7 @@ public class Bullet : MonoBehaviour
         {
             // Don't destroy if it hits a player bullet
         }
-        else if(collider.CompareTag("Enemy") && !IsFriendly)
+        else if((collider.CompareTag("Enemy") || collider.CompareTag("Boss")) && !IsFriendly)
         {
             //Dont destroy if its unfriendly and hits enemy
         }

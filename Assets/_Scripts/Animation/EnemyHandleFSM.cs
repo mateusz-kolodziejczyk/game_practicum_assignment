@@ -52,10 +52,6 @@ public class EnemyHandleFSM : MonoBehaviour
 
         }
         WaypointTransforms.RemoveAll(x => wayPointTransformsToRemove.Contains(x));
-        foreach (var x in WaypointTransforms)
-        {
-            Debug.Log(x);
-        }
 
         if (WaypointTransforms.Count > 0)
         {

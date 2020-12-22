@@ -21,11 +21,11 @@ GameObject:
   - component: {fileID: -7757583195364075278}
   m_Layer: 12
   m_Name: Boss 1
-  m_TagString: Enemy
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2395279887118272552
 Transform:
   m_ObjectHideFlags: 0
@@ -343,6 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 949db0f2e0c1fe542aadd02fc71c7af6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  droppableItems: []
   health: 500
   damage: 25
   timeBetweenAttacks: 4
