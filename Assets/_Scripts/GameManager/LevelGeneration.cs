@@ -13,7 +13,8 @@ public enum MapObjectType
     Boss,
     BossEntry,
     LevelExit,
-    ItemPickup
+    ItemPickup,
+    Lights,
 }
 
 struct Level
@@ -23,6 +24,7 @@ struct Level
     public int numberOfItems;
     public List<(int x, int y)> playerPositions;
     public List<(int x, int y)> enemyPositions;
+    public Material wallMaterial;
 }
 public class LevelGeneration : MonoBehaviour
 {
@@ -39,6 +41,8 @@ public class LevelGeneration : MonoBehaviour
     GameObject levelExitTrigger;
     [SerializeField]
     GameObject waypoint;
+    [SerializeField]
+    GameObject lights;
 
 
     // This is for basic enemy types i.e. non bosses
@@ -49,6 +53,8 @@ public class LevelGeneration : MonoBehaviour
     [SerializeField]
     List<GameObject> itemPickups;
     LocalNavMeshBuilder localNavMeshBuilder;
+    [SerializeField]
+    List<Material> wallMaterials;
 
     // Store all levels
     List<Level> levels;
@@ -129,9 +135,21 @@ public class LevelGeneration : MonoBehaviour
                 {
                     levelMap[x, y] = MapObjectType.ItemPickup;
                 }
+                // Orange
+                else if((pixel.r >= 0.9) && pixel.g >= 0.46 && pixel.g <= 0.54 && pixel.b <= 0.1)
+                {
+                    levelMap[x, y] = MapObjectType.Lights;
+                }
             }
         }
-        levels.Add(new Level { id = levels.Count+1, levelMap = levelMap, numberOfItems = requiredItems, playerPositions = playerPositions, enemyPositions = enemyPositions });
+        levels.Add(new Level 
+        { 
+            id = levels.Count+1, 
+            levelMap = levelMap,
+            numberOfItems = requiredItems,
+            playerPositions = playerPositions, 
+            enemyPositions = enemyPositions, 
+            wallMaterial = wallMaterials[levels.Count] });
     }
 
     // Returns the instantiated player object for further use
@@ -156,6 +174,8 @@ public class LevelGeneration : MonoBehaviour
                     case MapObjectType.Empty:
                         break;
                     case MapObjectType.Wall:
+                        var wallRenderer = wall.GetComponent<Renderer>();
+                        wallRenderer.material = currentLevel.wallMaterial;
                         InstantiateObject(wall, x, y, mapWidth, mapHeight);
                         break;
                     case MapObjectType.Player:
@@ -185,6 +205,9 @@ public class LevelGeneration : MonoBehaviour
                         {
                             InstantiateObject(itemPickups[Random.Range(0, itemPickups.Count)], x, y, mapWidth, mapHeight);
                         }
+                        break;
+                    case MapObjectType.Lights:
+                        InstantiateObject(lights, x, y, mapWidth, mapHeight, 6.8f);
                         break;
                     default:
                         break;
@@ -219,7 +242,11 @@ public class LevelGeneration : MonoBehaviour
         return Instantiate(objectToInstantiate, new Vector3((mapWidth / 2 * 10) - x * 10, 1.5f, (mapHeight / 2 * 10) - y * 10),
                             Quaternion.identity);
     }
-
+    GameObject InstantiateObject(GameObject objectToInstantiate, int x, int y, int mapWidth, int mapHeight, float height)
+    {
+        return Instantiate(objectToInstantiate, new Vector3((mapWidth / 2 * 10) - x * 10, height, (mapHeight / 2 * 10) - y * 10),
+                            Quaternion.identity);
+    }
     void SpawnEnemies(Level level)
     {
         foreach (var (x, y) in level.enemyPositions)

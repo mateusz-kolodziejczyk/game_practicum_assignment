@@ -70,6 +70,7 @@ MonoBehaviour:
     type: 3}
   waypoint: {fileID: 1110167409761957026, guid: 671680a6aa516284096256ee7fd3721c,
     type: 3}
+  lights: {fileID: 8284899802338095657, guid: 28440d854407ed0449fde8c3d6aab207, type: 3}
   baseEnemyTypes:
   - {fileID: 6876507452352436326, guid: 87481bdd59c1da14cb0ecf16d91692af, type: 3}
   - {fileID: 2105942809302384611, guid: 6732326b52213fa42a593be74d472073, type: 3}
@@ -78,4 +79,9 @@ MonoBehaviour:
   itemPickups:
   - {fileID: 6746504354085184089, guid: d333668db2c141e469360bcd15563661, type: 3}
   - {fileID: 3118804175032495542, guid: f1ad8dba247868b47ac7b89cf8aff5b7, type: 3}
+  - {fileID: 2969713876564877837, guid: 67a322ea27766fc43a6f07ed6ccc52c6, type: 3}
+  wallMaterials:
+  - {fileID: 2100000, guid: a10cfad963acd3844b186d5e72af9e3e, type: 2}
+  - {fileID: 2100000, guid: a10cfad963acd3844b186d5e72af9e3e, type: 2}
+  - {fileID: 2100000, guid: a10cfad963acd3844b186d5e72af9e3e, type: 2}
   NumberOfLevels: 3
