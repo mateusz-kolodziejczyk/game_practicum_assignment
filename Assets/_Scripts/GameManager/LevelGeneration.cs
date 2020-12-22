@@ -61,7 +61,7 @@ public class LevelGeneration : MonoBehaviour
 
 
     [SerializeField]
-    int NumberOfLevels = 3;
+    int NumberOfLevels = 4;
 
     void Awake()
     {
@@ -218,7 +218,7 @@ public class LevelGeneration : MonoBehaviour
         var startingPosition = currentLevel.playerPositions[startingPositionIndex];
         playerObject = InstantiateObject(player, startingPosition.x, startingPosition.y, mapWidth, mapHeight);
         // Instantiate boss and enemies after the player has been instantiated
-        GetComponent<GameManagement>().RequiredItemsAmount = currentLevel.numberOfItems;
+        GetComponent<GameManagement>().RequiredItemsAmount = 1;
         SpawnEnemies(currentLevel);
         // The boss gets stuck in a wall unless the navmeshagent is disabled and the boss is manually placed back to its position.
         //InstantiateObject(bosses[0], bossPosition.x, bossPosition.y, mapWidth, mapHeight);

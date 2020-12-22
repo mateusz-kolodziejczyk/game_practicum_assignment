@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
 
     private GameManagement gameManagement;
     private AudioSource playerSource;
+    private bool increasingMaxHealth = false;
 
     private void Awake()
     {
@@ -53,12 +54,25 @@ public class Player : MonoBehaviour
         SetHealthText();
     }
 
+    private IEnumerator IncreasedMaxHealth()
+    {
+        increasingMaxHealth = true;
+        yield return new WaitForSeconds(2);
+        increasingMaxHealth = false;
+    }
+
     public void IncreaseMaxHealth(float amountToChange)
     {
-        maxHealth += amountToChange;
-        health = maxHealth;
-        gameManagement.MaxHealth = maxHealth;
-        SetHealthText();
+        if (!increasingMaxHealth)
+        {
+            Debug.Log(amountToChange);
+            maxHealth += amountToChange;
+            health = maxHealth;
+            gameManagement.MaxHealth = maxHealth;
+            SetHealthText();
+            StartCoroutine(IncreasedMaxHealth());
+        }
+
     }
 
     private void SetHealthText()

@@ -76,12 +76,16 @@ MonoBehaviour:
   - {fileID: 2105942809302384611, guid: 6732326b52213fa42a593be74d472073, type: 3}
   bosses:
   - {fileID: 2395279887118272532, guid: 0c98d0e8067e1f44f9934b84e59d9b11, type: 3}
+  - {fileID: 2395279887118272532, guid: 0c98d0e8067e1f44f9934b84e59d9b11, type: 3}
+  - {fileID: 3227838661098462619, guid: 523ff28c8c12e6642a55f2d2e5b26d69, type: 3}
+  - {fileID: 9212690250134496405, guid: 78246b35b0ca49b44976de084790deb4, type: 3}
   itemPickups:
   - {fileID: 6746504354085184089, guid: d333668db2c141e469360bcd15563661, type: 3}
   - {fileID: 3118804175032495542, guid: f1ad8dba247868b47ac7b89cf8aff5b7, type: 3}
   - {fileID: 2969713876564877837, guid: 67a322ea27766fc43a6f07ed6ccc52c6, type: 3}
   wallMaterials:
-  - {fileID: 2100000, guid: a10cfad963acd3844b186d5e72af9e3e, type: 2}
-  - {fileID: 2100000, guid: a10cfad963acd3844b186d5e72af9e3e, type: 2}
-  - {fileID: 2100000, guid: a10cfad963acd3844b186d5e72af9e3e, type: 2}
-  NumberOfLevels: 3
+  - {fileID: 2100000, guid: 709673c517c995a4c9ed27ea8aed0d5c, type: 2}
+  - {fileID: 2100000, guid: 153c311d0e4004347b32a730ba5529cb, type: 2}
+  - {fileID: 2100000, guid: 100da24c135d0774e9573b9ec5bb1439, type: 2}
+  - {fileID: 2100000, guid: 100da24c135d0774e9573b9ec5bb1439, type: 2}
+  NumberOfLevels: 4

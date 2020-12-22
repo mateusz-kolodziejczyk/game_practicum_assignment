@@ -390,7 +390,6 @@ public class GameManagement : MonoBehaviour
 
         var enemies = GetCurrentEnemies();
         var difficultyMultiplier = CalculateKillStreakDifficultyMultiplier(killStreakCount);
-        Debug.Log(difficultyMultiplier);
         AdjustEnemyAttributes(difficultyMultiplier, false, enemies);
 
         yield return new WaitForSeconds(20);

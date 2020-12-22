@@ -28,6 +28,7 @@ TagManager:
   - ExitConfirmText
   - TimeText
   - Boss
+  - Credits
   layers:
   - Default
   - TransparentFX
