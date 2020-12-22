@@ -297,6 +297,8 @@ MonoBehaviour:
   bulletEmitter: {fileID: 2620932666735793114}
   bulletSpread: 0.4
   ShootingNoise: {fileID: 8300000, guid: b4e9a69e783e1d648a27f5b0fba403d6, type: 3}
+  isAttacking: 1
+  attackTimer: 0
   attackAnimation: {fileID: -203655887218126122, guid: 75a39d214174b9743b7f428bb183961e,
     type: 3}
   droppableItem: {fileID: 7542958113966960944, guid: 1442ff5ee29e21048beecf80db2b303b,

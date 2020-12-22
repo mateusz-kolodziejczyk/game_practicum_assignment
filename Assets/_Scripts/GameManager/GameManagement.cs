@@ -88,6 +88,9 @@ public class GameManagement : MonoBehaviour
 
     float dynamicDifficultyMultiplier = 1;
 
+    bool unlockedBossDoor = false;
+    int previousBuildIndex = -1;
+
     void Awake()
     {
         levelGeneration = GetComponent<LevelGeneration>();
@@ -281,6 +284,7 @@ public class GameManagement : MonoBehaviour
                 enemy.TimeBetweenAttacks /= (1f / difficultyMultiplier);
             }
             else
+        Debug.Log(difficultyMultiplier);
             {
                 // Multiply the variables by the value of the multipliers gotten using the key
                 enemy.MaxHealth *= difficultyMultiplier;
@@ -319,11 +323,12 @@ public class GameManagement : MonoBehaviour
     {
         itemProgress++;
         SetItemProgressText();
-        if (itemProgress >= RequiredItemsAmount)
+        Debug.Log(unlockedBossDoor);
+        if (itemProgress >= RequiredItemsAmount && !unlockedBossDoor)
         {
-            Debug.Log("Logd");
             UnlockWeapon(UnlockedWeaponIDs.Last() + 1);
             OpenBossEntrance();
+            unlockedBossDoor = true;
         }
     }
 
@@ -522,6 +527,8 @@ public class GameManagement : MonoBehaviour
             // Only look for these things in non menu indexes and non game over(game over is always the last index)
             if (scene.buildIndex > 1 && scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1)
             {
+
+
                 ResetDynamicDifficulty();
                 levelTimer = 0;
                 Instantiate(HUD);
@@ -552,6 +559,17 @@ public class GameManagement : MonoBehaviour
                 // Two doors unlocked by progressing through the level
                 bossEntranceDoor = GameObject.FindWithTag("BossEntranceDoor");
                 levelExitDoor = GameObject.FindWithTag("LevelExitDoor");
+
+                Debug.Log(scene.buildIndex == previousBuildIndex);
+                // If its the same level and unlcoked the boss door.
+                if (unlockedBossDoor && scene.buildIndex == previousBuildIndex)
+                {
+                    OpenBossEntrance();
+                }
+                else
+                {
+                    unlockedBossDoor = false;
+                }
                 // Set the text again on the level loaidng in
                 UpdateMuteText();
                 SetScoreText();
@@ -582,6 +600,8 @@ public class GameManagement : MonoBehaviour
                     difficultySelection = GameObject.FindWithTag("DifficultySelection").GetComponent<Dropdown>();
                 }
             }
+
+            previousBuildIndex = scene.buildIndex;
 
         }
     }

@@ -3375,6 +3375,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1514499770}
     m_Modifications:
+    - target: {fileID: 1598534752929875027, guid: 7de400d277b757c49b10d16dcb61383e,
+        type: 3}
+      propertyPath: m_Text
+      value: "Easy Character Movement - Oscar Graci\xE1n\nPOLYGON SciFi City - Synty
+        Studios\nStandard Assets - Unity Technologies Inc.\nUrban Night Sky - Kendall
+        Weaver\nYughues Free Metal Materials - Nobiax / Yughues\n\n\n\nFreesound.org:\nShotgun1.aif
+        - knova\nNormal click - Breviceps \nHurt_C_09 - cabled_mess\nWind, Synthesized,
+        A.wav - InspectorJ\nSpacey 1up/Power up - GameAudio\nDigital Alarm Loop.wav
+        - bbrocer\nGun Sound 4 - TheNikonProductions\nLaser10.wav - jobro\n\nMusic:\nBeside
+        Me - Patrick Patrikios\nBrass Orchid - Bobby Richards\nFast and Run - Nico
+        Staf\nFind Me Here - Patrick Patrikios\n\n"
+      objectReference: {fileID: 0}
     - target: {fileID: 6132476256154677768, guid: 7de400d277b757c49b10d16dcb61383e,
         type: 3}
       propertyPath: m_Name
