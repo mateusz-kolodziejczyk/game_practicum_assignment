@@ -285,9 +285,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   droppableItems: []
-  health: 1000
+  health: 1300
   damage: 5
-  timeBetweenAttacks: 1
+  timeBetweenAttacks: 1.5
   awareNoise: {fileID: 8300000, guid: f3243faff305ced4d801e84c51dd8dfb, type: 3}
   score: 5000
   enemyDamagedMaterial: {fileID: 2100000, guid: bef53dbc88431a943b3897fbd45ee4e2,
@@ -303,7 +303,7 @@ MonoBehaviour:
     type: 3}
   droppableItem: {fileID: 7542958113966960944, guid: 1442ff5ee29e21048beecf80db2b303b,
     type: 3}
-  bulletsPerShot: 20
+  bulletsPerShot: 15
 --- !u!82 &2356596330956955333
 AudioSource:
   m_ObjectHideFlags: 0

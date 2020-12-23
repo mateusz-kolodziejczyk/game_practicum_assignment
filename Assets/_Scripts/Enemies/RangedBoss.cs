@@ -21,7 +21,7 @@ public class RangedBoss : BasicRanged
 
     private void DropItem()
     {
-        Instantiate(droppableItem, transform.position + new Vector3(0,3,0), Quaternion.identity);
+        Instantiate(droppableItem, transform.position + new Vector3(0,2,0), Quaternion.identity);
     }
     
 }

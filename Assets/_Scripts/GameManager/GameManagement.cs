@@ -30,6 +30,7 @@ public class GameManagement : MonoBehaviour
     Text muteText;
     Text livesText;
     Text timeText;
+    Text endScreenText;
     GameObject exitConfirmText;
 
     GameObject ingameMenu;
@@ -63,7 +64,7 @@ public class GameManagement : MonoBehaviour
     public int RequiredItemsAmount { get; set; } = 3;
     // Difficulty 
     Dropdown difficultySelection;
-    public DifficultyLevel CurrentDifficulty { get; set; } = DifficultyLevel.Hard;
+    public DifficultyLevel CurrentDifficulty { get; set; } = DifficultyLevel.Easy;
 
     // This dictionary holds the multipliers for attack speed/damage/health
     Dictionary<DifficultyLevel, float> difficultyMultipliers = new Dictionary<DifficultyLevel, float>();
@@ -89,6 +90,7 @@ public class GameManagement : MonoBehaviour
     float dynamicDifficultyMultiplier = 1;
 
     bool unlockedBossDoor = false;
+    public bool BeatGame { get; set; }
     int previousBuildIndex = -1;
 
     void Awake()
@@ -587,6 +589,7 @@ public class GameManagement : MonoBehaviour
             {
                 levelTimer = 0;
                 MaxHealth = 100;
+                CurrentLives = MaxLives;
                 // Clear all weapons
                 WeaponsInventory.Clear();
                 UnlockedWeaponIDs.Clear();
@@ -598,6 +601,19 @@ public class GameManagement : MonoBehaviour
                 {
                     // Get the difficulty dropdown
                     difficultySelection = GameObject.FindWithTag("DifficultySelection").GetComponent<Dropdown>();
+                }
+                else if (scene.buildIndex == SceneManager.sceneCountInBuildSettings - 1)
+                {
+
+                    endScreenText = GameObject.FindWithTag("EndScreenText").GetComponent<Text>();
+                    if (BeatGame)
+                    {
+                        endScreenText.text = "Congratulations\n You beat the game";
+                    }
+                    else
+                    {
+                        endScreenText.text = "Game Over";
+                    }
                 }
             }
 
